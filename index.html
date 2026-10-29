@@ -3,85 +3,124 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.json">
 <title>Lovely!</title>
 <style>
-:root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif;
---gt:#ffffff52;--gr:#ffffff9a;--lr:#0000001c;--lf:#ffffff80;
---cap:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Crect width='100' height='100' rx='50'/%3E%3C/svg%3E")}
-:root.dk{--gt:#3a3a4094;--gr:#ffffff2e;--lr:#00000070;--lf:#ffffff26}
+:root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom);transition:padding-left .2s}
 main{max-width:480px;margin:0 auto;padding:16px 0 120px}
 #bg{position:fixed;inset:0;z-index:-1}
 #bg img,#bg video{width:100%;height:100%;object-fit:cover}
 .card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px}
-body.media .card{background:linear-gradient(150deg,#ffffff24,#ffffff06 40%,#ffffff10),color-mix(in srgb,var(--card) 32%,transparent);
-  -webkit-backdrop-filter:blur(6px) saturate(1.8) brightness(1.05);backdrop-filter:blur(6px) saturate(1.8) brightness(1.05);
-  border:1px solid var(--gr);box-shadow:inset 0 1px 0 #ffffff55,inset 0 -1px 1px #0000002b,0 10px 28px #0000003a}
+body.media .card{background:color-mix(in srgb,var(--card) 75%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 .hero{text-align:center;padding:28px 16px}.hero .emoji{font-size:56px}.hero h2{margin:6px 0 2px;font-size:26px}
+.hero-name-row{display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#aaa;margin-right:6px}.dot.on{background:#2fbf71}
 .muted{opacity:.6;font-size:14px}
-h3{margin:20px 0 4px;font-size:17px}label{display:block;margin-top:8px}
+h3{margin:20px 0 4px;font-size:17px}label{display:block;margin-top:6px}
 .chk{display:flex;gap:8px;align-items:center}.chk input{width:auto;margin:0}
 button,input,textarea,select{font:inherit;color:inherit}
-input,textarea,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #8883;background:transparent;margin:4px 0}
-button{border:0;border-radius:999px;padding:8px 14px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff66,0 4px 16px color-mix(in srgb,var(--accent) 42%,transparent)}
-button.ghost{background:#8882;color:var(--ink);box-shadow:inset 0 1px 0 #ffffff2e}
+input,textarea,select{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #8883;background:transparent;margin:2px 0}
+button{border:0;border-radius:999px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer}
+button.ghost{background:#8882;color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .row{display:flex;gap:8px}.row>input{flex:1}
 .note{padding:8px 12px;border-radius:16px;margin:6px 0;max-width:85%;background:#8882}
-.note.me{background:var(--accent);color:#fff;margin-left:auto;box-shadow:inset 0 1px 0 #ffffff55,0 3px 14px color-mix(in srgb,var(--accent) 38%,transparent)}
-#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:color-mix(in srgb,var(--accent) 72%,transparent);-webkit-backdrop-filter:blur(6px) saturate(1.8);backdrop-filter:blur(6px) saturate(1.8);border:1px solid #ffffff55;color:#fff;max-width:90vw;box-shadow:inset 0 1px 0 #ffffff66,0 6px 26px color-mix(in srgb,var(--accent) 50%,transparent);padding:10px 16px;border-radius:20px;display:none;z-index:30}
+.note.me{background:var(--accent);color:#fff;margin-left:auto}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--accent);color:#fff;max-width:90vw;box-shadow:0 4px 16px #0004;padding:10px 16px;border-radius:20px;display:none;z-index:30}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
 .grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block;cursor:pointer}
 #lb{position:fixed;inset:0;z-index:20;background:#000e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
 #lb img{max-width:100%;max-height:80vh;border-radius:12px}
+
 /* navigation */
-#nav{position:fixed;z-index:5;display:flex}
-.nv-track{display:contents}
-.ni{background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;padding:8px 14px;border-radius:999px;opacity:.92}
-.ni.on{opacity:1;background:transparent;color:var(--accent);box-shadow:none}
-.tgl,.nv-glass,.lens,.lens-glow{display:none}
+#nav{position:fixed;z-index:5;display:flex;flex-direction:column;align-items:center;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.ni{background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:8px 16px;border-radius:999px;opacity:.65}
+.ni.on{opacity:1;background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
+.ni img.nav-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.tgl,.glass-indicator{display:none}
 body.nonav #nav{display:none}
+
 @media(max-width:767px){
-  #nav{--lx:0px;--ly:0px;--lw:0px;--lh:0px;--lift:0;--ls:1;--nw:0px;--nh:0px;
-    left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);padding:6px;border-radius:999px;
-    touch-action:pan-y;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-  .ni{padding:8px 12px;min-width:68px;gap:3px}
-  .ni svg{width:26px;height:26px}
-  #nav .ni.on{background:none;color:var(--accent)}
-  .nv-glass{display:block;position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;
-    background:linear-gradient(160deg,#ffffff26,#ffffff06 38%,#ffffff0a 70%,#ffffff1c),var(--gt);
-    -webkit-backdrop-filter:blur(7px) saturate(1.9) brightness(1.08);backdrop-filter:blur(7px) saturate(1.9) brightness(1.08);
-    border:1px solid var(--gr);
-    box-shadow:inset 0 1px 0 #ffffff59,inset 0 -1px 1px #0000002e,inset 1px 0 0 #ffffff1a,0 12px 32px #0000004d,0 0 30px color-mix(in srgb,var(--accent) 16%,transparent)}
-  .nv-track{display:flex;gap:2px;position:relative;z-index:2;
-    -webkit-mask-image:linear-gradient(#000,#000),var(--cap);mask-image:linear-gradient(#000,#000),var(--cap);
-    -webkit-mask-size:100% 100%,var(--lw) var(--lh);mask-size:100% 100%,var(--lw) var(--lh);
-    -webkit-mask-position:0 0,calc(var(--lx) - 6px) calc(var(--ly) - 6px);mask-position:0 0,calc(var(--lx) - 6px) calc(var(--ly) - 6px);
-    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-composite:xor;mask-composite:exclude}
-  .lens-glow{display:block;position:absolute;left:0;top:0;z-index:1;pointer-events:none;width:calc(var(--lw) + 40px);height:calc(var(--lh) + 40px);
-    transform:translate3d(calc(var(--lx) - 20px),calc(var(--ly) - 20px),0);opacity:calc(var(--lift) * .6);
-    background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 60%,transparent),transparent)}
-  /* Keep the liquid motion subtle: no separate button bubbles or duplicated/magnified icons. */
-  .lens{display:block;position:absolute;left:0;top:0;z-index:1;pointer-events:none;width:var(--lw);height:var(--lh);
-    transform:translate3d(var(--lx),var(--ly),0);border-radius:999px;overflow:hidden;
-    background:transparent;border:0;box-shadow:none;
-    -webkit-backdrop-filter:none;backdrop-filter:none}
-  .lens::before,.lens::after{content:none}
-  .lens-in{display:none}
-  .lens-in .ni svg{filter:none}
+  #nav{
+    left:50%; bottom:calc(env(safe-area-inset-bottom) + 12px); translate:-50% 0; scale:1;
+    padding:4px 8px 4px 8px; gap:0; border-radius:999px; width:auto;
+    background:var(--glass-tint,rgba(255,255,255,.38));
+    -webkit-backdrop-filter:blur(14px) saturate(200%) brightness(1.04); backdrop-filter:blur(14px) saturate(200%) brightness(1.04);
+    box-shadow:0 12px 32px #0000002e,0 2px 8px #00000014,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff33,inset 0 0 22px #ffffff26;
+    will-change:transform, height, width;
+  }
+  #nav.is-pressing{scale:1.02}
+  #nav .ni span{display:none}
+  #nav .ni{padding:8px 16px}
+
+  /* Small subtle notch indicator directly inside the pill bar */
+  #nav-handle{
+    width:24px; height:3px; border-radius:999px; background:var(--ink); opacity:.25; margin-bottom:2px; cursor:pointer; flex-shrink:0; align-self:center;
+  }
+
+  /* specular rim, bright at opposite corners */
+  #nav::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
+    background:linear-gradient(135deg,#fffffff2,#ffffff14 28%,#ffffff0a 62%,#ffffffd9);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+
+  /* light pooling that follows the lens */
+  #nav::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+    background:radial-gradient(70px 48px at var(--lx,50%) 50%,#ffffff40,transparent 70%)}
+
+  #nav.expanded .glass-indicator{display:none !important;}
+  #nav .ni{position:relative;z-index:2;transition:color .2s,opacity .2s}
+  #nav .ni svg,#nav .ni img{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+  #nav .ni.on{background:transparent}
+  #nav .ni.on svg,#nav .ni.hot svg,#nav .ni.on img,#nav .ni.hot img{transform:scale(1.1)}
+  #nav .ni.hot{color:var(--accent);opacity:1}
+  #nav.is-dragging .ni.on:not(.hot){color:var(--ink);opacity:.65}
+
+  #nav .glass-indicator{display:block;position:absolute;z-index:1;left:0;top:auto;bottom:4px;height:40px;width:56px;
+    border-radius:999px;pointer-events:none;will-change:transform;
+    background:rgba(24,20,32,.28);
+    border:0!important;outline:0!important;
+    box-shadow:none!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    transition:background .25s}
+  #nav.lifted .glass-indicator{
+    background:rgba(24,20,32,.34);
+    border:0!important;outline:0!important;box-shadow:none!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+
+  /* pill <-> drawer morph */
+  #nav{justify-content:flex-end}
+  #nav.pulling{overflow:hidden}
+  #nav-handle{opacity:calc(.25 * clamp(0, 1 - var(--p,0) * 4, 1))}
+  #nav-row{display:flex;align-items:center;position:relative;z-index:2;
+    opacity:clamp(0, calc(1 - var(--p,0) * 2.2), 1)}
+  #nav .glass-indicator{opacity:clamp(0, calc(1 - var(--p,0) * 2.2), 1)}
+
+  #account-drawer{position:absolute;top:12px;left:50%;translate:-50% 0;
+    display:flex;flex-direction:column;gap:6px;box-sizing:border-box;pointer-events:none;
+    opacity:clamp(0, calc(var(--p,0) * 1.8 - .6), 1)}
+  #account-drawer input{-webkit-user-select:text;user-select:text}
+
+  #nav.expanded{border-radius:24px;padding:12px 18px;width:min(90vw,320px)}
+  #nav.expanded #nav-row,#nav.expanded #nav-handle{display:none}
+  #nav.expanded #account-drawer{position:static;translate:none;width:100%!important;
+    pointer-events:auto;opacity:1}
 }
-@media(prefers-reduced-motion:reduce){.lens,.lens-glow{transition:none}}
+@media(prefers-reduced-motion:reduce){
+  #nav,#nav .ni,#nav .ni svg,#nav .ni img,#nav .glass-indicator{transition:none!important}
+}
 @media(min-width:768px){
   #nav{left:0;top:0;bottom:0;width:190px;flex-direction:column;gap:6px;padding:16px 12px;background:var(--card);border-right:1px solid #8882;transition:width .2s}
+  #nav-handle{display:none}
+  #nav-row{display:flex;flex-direction:column;gap:6px;width:100%}
+  #account-drawer{display:none}
   .ni{flex-direction:row;gap:12px;font-size:15px;padding:12px 14px;border-radius:14px;width:100%}
   .tgl{display:block;align-self:flex-end;background:none;color:var(--ink);padding:4px 10px;margin-bottom:8px;opacity:.6}
   body{padding-left:206px}body.min{padding-left:88px}body.nonav{padding-left:16px}
   body.min #nav{width:72px}body.min .ni span{display:none}body.min .ni{justify-content:center}
   main{max-width:640px;padding-bottom:40px}.grid{grid-template-columns:repeat(4,1fr)}
-  body.media #nav{background:color-mix(in srgb,var(--card) 32%,transparent);-webkit-backdrop-filter:blur(6px) saturate(1.8);backdrop-filter:blur(6px) saturate(1.8);border-right-color:#ffffff30;box-shadow:inset -1px 0 0 #ffffff22}
 }
 </style></head>
 <body class="nonav"><div id="bg"></div><div id="toast"></div><nav id="nav"></nav><main id="app"></main>
@@ -92,7 +131,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = s => document.querySelector(s), app = $('#app');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ls = {get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} }};
-let me, people = {}, notes = [], photos = [], photoErr = '', tab = 'home', adding = false, viewing = null, collapsed = ls.get('nav') === 'min';
+let me, people = {}, notes = [], photos = [], photoErr = '', tab = 'home', adding = false, viewing = null, collapsed = ls.get('nav') === 'min', expandedMenu = false;
 const urlCache = {};
 const partner = () => Object.values(people).find(p => p.id !== me);
 const online = p => p && Date.now() - new Date(p.last_seen) < 75000;
@@ -138,24 +177,27 @@ async function setBg(g){
   if (!u) { el.dataset.k = ''; return; }
   el.innerHTML = g.type === 'video' ? `<video src="${u}" autoplay loop muted playsinline></video>` : `<img src="${u}" alt="">`;
 }
-function applyTheme(){
+async function applyTheme(){
   const th = people[me]?.theme || {}, r = document.documentElement.style;
   const g = th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
   const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
   const media = g.on && g.type !== 'color' && g.path;
   const bg = g.on && g.type === 'color' && th.bg ? th.bg : (sysDark ? '#17131f' : '#f2effa');
   const n = parseInt(bg.slice(1), 16), dark = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255 < 0.5;
-  document.documentElement.classList.toggle('dk', dark); r.setProperty('--accent', th.accent || '#e0457b');
+  r.setProperty('--accent', th.accent || '#e0457b');
   r.setProperty('--bg', bg);
   r.setProperty('--ink', dark ? '#f1eefb' : '#241f33');
   r.setProperty('--card', dark ? 'color-mix(in srgb, ' + bg + ' 85%, white)' : '#fff');
+  r.setProperty('--glass-tint', dark ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.38)');
   r.setProperty('--font', th.font || 'ui-rounded,system-ui,sans-serif');
   setBg(media ? g : null);
+
+  const paths = Object.values(people).map(p => p.avatar_url).filter(Boolean);
+  if (paths.length) await signed(paths);
 }
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 
 async function boot(){
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
   const { data: { session } } = await sb.auth.getSession();
   if (!session) return login();
   me = session.user.id; document.body.classList.remove('nonav');
@@ -175,16 +217,19 @@ async function boot(){
   photos = ph || []; photoErr = phe ? phe.message : '';
   if (photos.length) await signed(photos.map(x => x.path));
   sb.channel('us')
-    .on('postgres_changes', {event:'*', schema:'public', table:'profiles'}, ({new: p}) => {
+    .on('postgres_changes', {event:'*', schema:'public', table:'profiles'}, async payload => {
+      const p = payload.new;
       const old = people[p.id]; people[p.id] = p;
+      if (p.avatar_url) await signed([p.avatar_url]);
       if (p.id !== me && old && (old.status !== p.status || old.emoji !== p.emoji))
         toast(`${p.name} updated their Status to: ${p.emoji} ${p.status}`, {title: p.name, body: `updated their Status to: ${p.emoji} ${p.status}`});
       if (p.id === me) applyTheme();
-      const same = old && old.status === p.status && old.emoji === p.emoji && old.name === p.name && JSON.stringify(old.theme) === JSON.stringify(p.theme);
+      const same = old && old.status === p.status && old.emoji === p.emoji && old.name === p.name && old.avatar_url === p.avatar_url && old.border_color === p.border_color && JSON.stringify(old.theme) === JSON.stringify(p.theme);
       if (tab === 'settings' && (same || p.id !== me)) return;
       if (!(same && /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))) render();
     })
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'notes'}, ({new: n}) => {
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'notes'}, payload => {
+      const n = payload.new;
       if (notes.some(x => x.id === n.id)) return;
       notes.push(n);
       if (n.from_id !== me) { const nm = people[n.from_id]?.name || 'Your partner'; toast(`${nm} sent you a Note!`, {title: nm, body: 'sent you a Note!'}); }
@@ -197,7 +242,7 @@ async function boot(){
   }).subscribe();
   heartbeat(); setInterval(heartbeat, 30000);
   document.addEventListener('visibilitychange', heartbeat);
-  applyTheme(); render();
+  await applyTheme(); render();
 }
 async function heartbeat(){
   if (document.hidden || !me) return;
@@ -206,7 +251,7 @@ async function heartbeat(){
   await sb.from('profiles').update({last_seen: t}).eq('id', me);
 }
 function login(){
-  document.body.classList.add('nonav'); $('#nav').innerHTML = ''; delete $('#nav').dataset.built; lens.x = null;
+  document.body.classList.add('nonav'); $('#nav').innerHTML = '';
   app.innerHTML = `<div class="card"><h2>Us</h2>
     <input id="em" type="email" placeholder="Email" autocomplete="username">
     <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
@@ -222,91 +267,282 @@ async function save(patch){
   if (error) { toast('Could not save: ' + error.message); return false; }
   Object.assign(people[me], patch); applyTheme(); render(); return true;
 }
-const tabs = Object.keys(icons), reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches, wide = () => matchMedia('(min-width: 768px)').matches;
-const lens = {x: null, v: 0, tx: 0, lift: 0, lv: 0, down: false, trav: false, follow: false, off: 0, raf: 0, t: 0};
-let G = null;
-const tabHTML = t => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span>`;
-function ensureNav(){
-  const nav = $('#nav'); if (nav.dataset.built) return; nav.dataset.built = '1';
-  nav.innerHTML = '<button class="tgl" id="tgl" aria-label="Collapse menu"></button><span class="nv-glass" aria-hidden="true"></span><i class="lens-glow" aria-hidden="true"></i>' +
-    `<div class="nv-track">${tabs.map(t => `<button class="ni" data-tab="${t}">${tabHTML(t)}</button>`).join('')}</div>` +
-    `<div class="lens" aria-hidden="true"></div>`;
-  enableNavSwipe();
-}
-function measure(){
-  const nav = $('#nav'), nr = nav.getBoundingClientRect(); G = {l: {}, w: 0, h: 0, t: 0};
-  nav.querySelectorAll('.nv-track [data-tab]').forEach(b => { const r = b.getBoundingClientRect(); G.l[b.dataset.tab] = r.left - nr.left; G.w = r.width; G.h = r.height; G.t = r.top - nr.top; });
-  nav.style.setProperty('--nw', nr.width + 'px'); nav.style.setProperty('--nh', nr.height + 'px');
-  return G.w > 0;
-}
-function paintLens(){
-  if (!G) return; const st = $('#nav').style, k = lens.lift;
-  st.setProperty('--lw', (G.w + 8 + 18 * k) + 'px'); st.setProperty('--lh', (G.h + 16 * k) + 'px');
-  st.setProperty('--lx', (lens.x - 4 - 9 * k) + 'px'); st.setProperty('--ly', (G.t - 8 * k) + 'px');
-  st.setProperty('--ls', 1); st.setProperty('--lift', k);
-}
-function stepLens(now){
-  const dt = Math.min(.032, (now - (lens.t || now)) / 1000 || .016); lens.t = now;
-  if (lens.trav && Math.abs(lens.tx - lens.x) < G.w * .12) lens.trav = false;
-  const want = lens.down || lens.trav ? 1 : 0, k = lens.follow ? 900 : 300, c = lens.follow ? 62 : 30;
-  lens.v += ((lens.tx - lens.x) * k - lens.v * c) * dt; lens.x += lens.v * dt;
-  lens.lv += ((want - lens.lift) * 520 - lens.lv * 34) * dt; lens.lift += lens.lv * dt;
-  paintLens();
-  if (Math.abs(lens.tx - lens.x) > .3 || Math.abs(lens.v) > 4 || Math.abs(lens.lift - want) > .004 || Math.abs(lens.lv) > .05) lens.raf = requestAnimationFrame(stepLens);
-  else { lens.x = lens.tx; lens.lift = want; lens.v = lens.lv = lens.t = lens.raf = 0; paintLens(); }
-}
-function kick(){
-  if (reduce()) { lens.x = lens.tx; lens.lift = 0; paintLens(); return; }
-  if (!lens.raf) lens.raf = requestAnimationFrame(stepLens);
-}
-function syncNav(){
-  const nav = $('#nav');
-  nav.querySelectorAll('.nv-track [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
-  const t = $('#tgl'); if (t) t.textContent = collapsed ? '»' : '«';
-  if (wide() || !measure()) return;
-  const first = lens.x === null; lens.tx = G.l[tab];
-  if (first) { lens.x = lens.tx; lens.v = 0; lens.lift = 0; lens.lv = 0; paintLens(); } else kick();
-}
-window.addEventListener('resize', () => { lens.x = null; syncNav(); });
 
-function enableNavSwipe(){
-  const nav = $('#nav'); let id = null, sx = 0, moved = false, skip = false;
-  const nearest = x => tabs.reduce((a, t) => Math.abs(G.l[t] + G.w / 2 - x) < Math.abs(G.l[a] + G.w / 2 - x) ? t : a, tabs[0]);
-  const go = t => { if (t === tab) return false; tab = t; viewing = null; render(); scrollTo(0, 0); return true; };
-  nav.addEventListener('pointerdown', e => {
-    if (wide() || !e.isPrimary || e.button !== 0 || !e.target.closest('[data-tab]') || !measure()) return;
-    id = e.pointerId; sx = e.clientX; moved = false; lens.down = true; kick();
+/* ===== Liquid glass nav ===== */
+const isDesk = () => matchMedia('(min-width:768px)').matches;
+const navItems = () => [...$('#nav').querySelectorAll('[data-tab]')];
+const lg = {x:0, w:0, s:1, vx:0, vw:0, vs:0, tx:0, tw:0, lift:false, drag:false, raf:0, last:0, init:false};
+const LIFT = 1.16;
+
+function selectTab(t){
+  if (expandedMenu) closeMenu();
+  if (t !== tab) { tab = t; viewing = null; render(); scrollTo(0, 0); } else lgSync();
+}
+
+function syncTabs(){
+  navItems().forEach(b => {
+    const on = b.dataset.tab === tab && !expandedMenu;
+    b.classList.toggle('on', on);
+    on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
   });
-  nav.addEventListener('pointermove', e => {
-    if (id !== e.pointerId) return;
-    const r = nav.getBoundingClientRect();
-    if (!moved && Math.abs(e.clientX - sx) > 8) { moved = true; lens.follow = true; lens.off = lens.x + G.w / 2 - (sx - r.left); nav.setPointerCapture?.(id); }
-    if (moved) { lens.tx = Math.max(G.l[tabs[0]], Math.min(G.l[tabs[tabs.length - 1]], e.clientX - r.left + lens.off - G.w / 2)); kick(); }
-  });
-  const end = e => {
-    if (id !== e.pointerId) return; id = null; lens.down = false; lens.follow = false;
-    if (moved) { skip = true; setTimeout(() => skip = false); lens.trav = true; if (!go(nearest(lens.x + G.w / 2))) { lens.tx = G.l[tab]; kick(); } }
-    else kick();
+}
+
+function buildNav(){
+  const nav = $('#nav');
+  if (!nav.querySelector('#nav-row')) {
+    nav.innerHTML = `
+      <div id="nav-handle" title="Swipe up for Account Settings" aria-label="Swipe up for Account Settings"></div>
+      <button class="tgl" id="tgl" aria-label="Collapse menu"></button>
+      <span class="glass-indicator" id="lens" aria-hidden="true"></span>
+      <div id="nav-row">
+        ${Object.keys(icons).map(t => `<button class="ni" data-tab="${t}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span></button>`).join('')}
+      </div>
+      <div id="account-drawer"></div>`;
+  }
+
+  $('#tgl').textContent = collapsed ? '»' : '«';
+  syncTabs();
+  const dr = $('#account-drawer');
+  if (!dr.firstChild) { fillDrawer(); dr.inert = true; }   // content exists before the first pull
+}
+
+function fillDrawer(keepName){
+  const d = $('#account-drawer'); if (!d) return;
+  const prev = keepName && $('#drawer-name') ? $('#drawer-name').value : null;
+  const mine = people[me] || {};
+  const avatarUrl = mine.avatar_url ? urlCache[mine.avatar_url] : '';
+  const borderColor = mine.border_color || '#e0457b';
+  d.innerHTML = `
+    <div style="text-align:center; margin:2px 0">
+      <div style="position:relative; display:inline-block">
+        <img id="drawer-avatar-preview" src="${avatarUrl || ''}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid ${borderColor}; display:${avatarUrl ? 'block' : 'none'}">
+        <div id="drawer-avatar-placeholder" style="width:48px; height:48px; border-radius:50%; background:#8883; display:${avatarUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; border:2px solid ${borderColor}">👤</div>
+      </div>
+      <div><button class="ghost" id="drawer-change-avatar" style="margin-top:2px; font-size:11px; padding:4px 10px">Change Picture</button></div>
+      <input id="drawer-avatar-file" type="file" accept="image/*" hidden>
+    </div>
+    <label style="font-size:12px; margin:2px 0">Display Name<input id="drawer-name" value="${esc(mine.name)}" style="padding:6px 10px; margin:2px 0; font-size:13px"></label>
+    <label style="font-size:12px; margin:2px 0">Profile Border Color<input id="drawer-border-color" type="color" value="${borderColor}" style="padding:2px; height:30px; margin:2px 0"></label>
+    <div class="row" style="margin-top:6px">
+      <button id="drawer-save" style="flex:1; padding:6px; font-size:13px">Save</button>
+      <button class="ghost" id="drawer-close" style="flex:1; padding:6px; font-size:13px">Close</button>
+    </div>`;
+  if (prev !== null) $('#drawer-name').value = prev;
+
+  $('#drawer-close').onclick = closeMenu;
+  $('#drawer-change-avatar').onclick = () => $('#drawer-avatar-file').click();
+  $('#drawer-avatar-file').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    toast('Uploading profile picture...');
+    const path = await upload(f, 'avatars');
+    if (path) { await signed([path]); await save({avatar_url: path}); fillDrawer(true); toast('Profile picture updated!'); }
   };
-  nav.addEventListener('pointerup', end); nav.addEventListener('pointercancel', end);
-  nav.addEventListener('click', e => {
-    const b = e.target.closest('.nv-track [data-tab]'); if (!b || skip) return;
-    lens.trav = !wide(); go(b.dataset.tab);
+  $('#drawer-save').onclick = async () => {
+    if (await save({name: $('#drawer-name').value.trim(), border_color: $('#drawer-border-color').value})) {
+      toast('Account settings saved'); closeMenu();
+    }
+  };
+}
+
+/* ===== Pill <-> account drawer morph ===== */
+const mn = {p: 0, raf: 0, pill: {w: 0, h: 0}, big: {w: 0, h: 0}};
+
+function measurePill(){
+  const n = $('#nav'), w = n.style.width, h = n.style.height, ex = n.classList.contains('expanded');
+  n.classList.remove('expanded'); n.style.width = n.style.height = '';
+  const r = {w: n.offsetWidth, h: n.offsetHeight};
+  if (ex) n.classList.add('expanded');
+  n.style.width = w; n.style.height = h;
+  return r;
+}
+function mnLayout(){
+  const d = $('#account-drawer'), w = Math.min(innerWidth * .9, 320);
+  mn.pill = measurePill();
+  d.style.width = (w - 36) + 'px';
+  mn.big = {w, h: d.offsetHeight + 24};
+}
+function mnPaint(){
+  const n = $('#nav'), k = Math.max(0, mn.p), L = (a, b) => a + (b - a) * k;
+  n.style.setProperty('--p', Math.min(1, k));
+  if (k === 0 && !expandedMenu) {
+    n.classList.remove('pulling');
+    n.style.width = n.style.height = n.style.borderRadius = '';
+    $('#lens').style.left = ''; return;
+  }
+  const w = L(mn.pill.w, mn.big.w);
+  n.classList.add('pulling');
+  n.style.width = w + 'px';
+  n.style.height = L(mn.pill.h, mn.big.h) + 'px';
+  n.style.borderRadius = L(mn.pill.h / 2, 24) + 'px';
+  $('#lens').style.left = (w - mn.pill.w) / 2 + 'px';   // keeps the lens over its icon while the nav widens
+}
+function mnTo(target, v = 0){
+  cancelAnimationFrame(mn.raf);
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) { mn.p = target; mnPaint(); mn.raf = 0; return mnSettled(); }
+  let last = performance.now();
+  const step = now => {
+    const dt = Math.min(.032, (now - last) / 1000); last = now;
+    v += (-300 * (mn.p - target) - 30 * v) * dt; mn.p += v * dt;
+    if (Math.abs(mn.p - target) < .002 && Math.abs(v) < .03) { mn.p = target; mnPaint(); mn.raf = 0; return mnSettled(); }
+    mnPaint(); mn.raf = requestAnimationFrame(step);
+  };
+  mn.raf = requestAnimationFrame(step);
+}
+function mnSettled(){
+  const n = $('#nav'), d = $('#account-drawer');
+  if (mn.p >= 1) {                       // hand over to the CSS .expanded layout (same size, so no jump)
+    n.classList.add('expanded'); n.classList.remove('pulling');
+    n.style.width = n.style.height = n.style.borderRadius = '';
+    $('#lens').style.left = ''; d.inert = false;
+  } else {
+    n.classList.remove('expanded', 'pulling'); d.inert = true; mnPaint(); lgSync(true);
+  }
+}
+function openMenu(v){ expandedMenu = true; syncTabs(); mnTo(1, v); }
+function closeMenu(){
+  if (!expandedMenu) return;
+  const n = $('#nav'); cancelAnimationFrame(mn.raf);
+  const big = {w: n.offsetWidth, h: n.offsetHeight};
+  mn.pill = measurePill(); mn.big = big; mn.p = 1;
+  $('#account-drawer').style.width = (big.w - 36) + 'px';
+  expandedMenu = false; n.classList.remove('expanded'); syncTabs(); mnPaint();
+  mnTo(0);
+}
+document.addEventListener('pointerdown', e => { if (expandedMenu && !e.target.closest('#nav')) closeMenu(); });
+
+const bx = b => b.offsetLeft + $('#nav-row').offsetLeft;   // button x in #nav coordinates
+function lgSync(snap){
+  if (isDesk() || expandedMenu) return;
+  const items = navItems(); if (!items.length) return;
+  const b = items.find(x => x.dataset.tab === tab) || items[0];
+  lg.tx = bx(b);
+  lg.tw = b.offsetWidth;
+  if (!lg.tw) return;
+  if (snap || !lg.init || matchMedia('(prefers-reduced-motion:reduce)').matches) { lg.x = lg.tx; lg.w = lg.tw; lg.init = true; lgPaint(); }
+  else lgStart();
+}
+function setLift(v){ lg.lift = v; $('#nav').classList.toggle('lifted', v); lgStart(); }
+function lgPaint(){
+  const el = $('#lens'); if (!el) return;
+  const st = Math.min(.22, Math.abs(lg.vx) / 2600);
+  el.style.width = lg.w + 'px';
+  el.style.transform = `translate3d(${lg.x}px,0,0) scale(${lg.s * (1 + st)},${lg.s * (1 - st * .6)})`;
+  $('#nav').style.setProperty('--lx', (lg.x + lg.w / 2) + 'px');
+}
+function lgStart(){ if (!lg.raf) { lg.last = performance.now(); lg.raf = requestAnimationFrame(lgFrame); } }
+function lgFrame(now){
+  const dt = Math.min(.032, (now - lg.last) / 1000); lg.last = now;
+  const sp = (p, v, t, k, c) => { v += (-k * (p - t) - c * v) * dt; return [p + v * dt, v]; };
+  const ts = lg.lift ? LIFT : 1;
+  [lg.x, lg.vx] = sp(lg.x, lg.vx, lg.tx, lg.drag ? 520 : 300, lg.drag ? 34 : 21);
+  [lg.w, lg.vw] = sp(lg.w, lg.vw, lg.tw, 300, 24);
+  [lg.s, lg.vs] = sp(lg.s, lg.vs, ts, 320, 17);
+  lgPaint();
+  const rest = Math.abs(lg.x - lg.tx) < .1 && Math.abs(lg.vx) < .5 && Math.abs(lg.w - lg.tw) < .1 &&
+               Math.abs(lg.vw) < .5 && Math.abs(lg.s - ts) < .002 && Math.abs(lg.vs) < .01;
+  if (rest && !lg.drag) { lg.x = lg.tx; lg.w = lg.tw; lg.s = ts; lg.vx = lg.vw = lg.vs = 0; lgPaint(); lg.raf = 0; return; }
+  lg.raf = requestAnimationFrame(lgFrame);
+}
+
+function initNav(){
+  const nav = $('#nav');
+  let pid = null, sx = 0, sy = 0, ly = 0, lt = 0, vy = 0, grab = 0, startBtn = null;
+  let dragging = false, pulling = false, onHandle = false;
+  const local = e => { const r = nav.getBoundingClientRect(); return (e.clientX - r.left) / (r.width / nav.offsetWidth); };
+  const near = cx => navItems().reduce((a, b) => Math.abs(bx(b) + b.offsetWidth / 2 - cx) < Math.abs(bx(a) + a.offsetWidth / 2 - cx) ? b : a);
+  const hot = b => navItems().forEach(x => x.classList.toggle('hot', x === b));
+  const travel = () => Math.max(80, mn.big.h - mn.pill.h);
+
+  nav.addEventListener('pointerdown', e => {
+    if (isDesk() || !e.isPrimary || pid !== null || expandedMenu || mn.raf) return;  // taps inside the open drawer are left alone
+    const b = e.target.closest('[data-tab]');
+    pid = e.pointerId; nav.setPointerCapture(pid);
+    startBtn = b; onHandle = !!e.target.closest('#nav-handle');
+    sx = local(e); sy = ly = e.clientY; lt = e.timeStamp; vy = 0; dragging = pulling = false;
+    if (!b) return;
+    nav.classList.add('is-pressing');
+    const onLens = b.dataset.tab === tab;
+    grab = onLens ? sx - lg.x : lg.w / 2;
+    if (onLens) setLift(true);
   });
+
+  nav.addEventListener('pointermove', e => {
+    if (e.pointerId !== pid) return;
+    const x = local(e), dy = sy - e.clientY, dt = e.timeStamp - lt;
+    if (dt > 0) vy = .8 * vy + .2 * ((ly - e.clientY) / dt) * 1000;   // px/s, up is positive
+    ly = e.clientY; lt = e.timeStamp;
+
+    if (!pulling && !dragging && dy > 10) {
+      pulling = true; startBtn = null;
+      nav.classList.remove('is-pressing', 'is-dragging'); lg.drag = false; hot(null); setLift(false);
+      fillDrawer(); mnLayout();
+    }
+    if (pulling) {
+      let p = (dy - 10) / travel();
+      if (p > 1) p = 1 + (p - 1) * .25;          // rubber-band past fully open
+      mn.p = Math.max(0, p); mnPaint(); return;
+    }
+
+    if (!startBtn) return;
+    if (!dragging && Math.abs(x - sx) > 6) { dragging = true; lg.drag = true; nav.classList.add('is-dragging'); setLift(true); }
+    if (!dragging) return;
+    const items = navItems(), min = bx(items[0]), max = bx(items.at(-1)) + items.at(-1).offsetWidth - lg.w;
+    let left = x - grab;
+    if (left < min) left = min - (min - left) * 0.25;
+    if (left > max) left = max + (left - max) * 0.25;
+    const h = near(left + lg.w / 2);
+    lg.tx = left; lg.tw = h.offsetWidth; hot(h); lgStart();
+  });
+
+  const end = cancel => e => {
+    if (e.pointerId !== pid) return;
+    const wasPull = pulling, tapHandle = onHandle && !dragging && !wasPull && !cancel;
+    const target = cancel || wasPull ? null : dragging ? near(lg.x + lg.w / 2) : startBtn;
+    pid = null; dragging = pulling = false; lg.drag = false; startBtn = null;
+    nav.classList.remove('is-pressing', 'is-dragging'); hot(null); setLift(false);
+
+    if (wasPull) {
+      const v = vy / travel();                    // progress units per second
+      const open = !cancel && ((mn.p > .4 && vy > -600) || vy > 600);
+      open ? openMenu(v) : mnTo(0, v);
+      return;
+    }
+    if (tapHandle) { fillDrawer(); mnLayout(); openMenu(); return; }
+    if (target) selectTab(target.dataset.tab); else lgSync();
+  };
+  nav.addEventListener('pointerup', end(false));
+  nav.addEventListener('pointercancel', end(true));
+
+  nav.addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b) return;
+    if (!isDesk() && e.detail > 0) return;
+    selectTab(b.dataset.tab);
+  });
+  new ResizeObserver(() => lgSync(true)).observe(nav);
 }
 
 function render(){
   const act = document.activeElement?.id, keep = {};
-  ['nt','ne','nx'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
-  const p = partner(), mine = people[me], presets = mine.theme?.presets || defPresets;
+  ['nt','ne','nx','drawer-name'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
+  const p = partner(), mine = people[me] || {}, presets = mine.theme?.presets || defPresets;
   document.body.classList.toggle('min', collapsed);
-  ensureNav(); syncNav();
+  buildNav();
   let body = '';
+
+  const renderProfileTitle = (prof) => {
+    if (!prof) return `<p class="muted">Waiting for your partner to create their account.</p>`;
+    const avatar = prof.avatar_url ? urlCache[prof.avatar_url] : '';
+    const border = prof.border_color || 'var(--accent)';
+    return `<div class="hero-name-row">
+      ${avatar ? `<img class="hero-avatar" src="${avatar}" style="border:2px solid ${border}">` : ''}
+      <h2>${esc(prof.name)}</h2>
+    </div>
+    <div style="margin-top:6px">${esc(prof.emoji)} ${esc(prof.status)}</div>
+    <div class="muted" style="margin-top:4px"><span class="dot ${online(prof) ? 'on' : ''}"></span>${online(prof) ? 'Online now' : 'Last seen ' + new Date(prof.last_seen).toLocaleString()}</div>`;
+  };
+
   if (tab === 'home') body = `
-    <div class="card hero">${p ? `<div class="emoji">${esc(p.emoji)}</div><h2>${esc(p.name)}</h2>
-      <div>${esc(p.status)}</div>
-      <div class="muted"><span class="dot ${online(p) ? 'on' : ''}"></span>${online(p) ? 'Online now' : 'Last seen ' + new Date(p.last_seen).toLocaleString()}</div>`
-      : `<p class="muted">Waiting for your partner to create their account.</p>`}</div>
+    <div class="card hero">${renderProfileTitle(p)}</div>
     <div class="card"><b>Your status</b>
       <div class="chips" style="margin-top:8px">${presets.map(x => `<button class="${x === mine.emoji + ' ' + mine.status ? '' : 'ghost'}" data-preset="${esc(x)}">${esc(x)}</button>`).join('')}
         ${adding ? '' : '<button class="ghost" id="addbtn">+ Add status</button>'}</div>
@@ -324,7 +560,6 @@ function render(){
   if (tab === 'settings') {
     const th = mine.theme || {}, g = th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
     body = `<div class="card"><h3 style="margin-top:0">You</h3>
-    <label>Your name<input id="nm" value="${esc(mine.name)}"></label>
     <label>Accent color<input id="ac" type="color" value="${th.accent || '#e0457b'}"></label>
     <label>Font<select id="ft">${[['Rounded','ui-rounded, system-ui, sans-serif'],['Serif','Georgia, serif'],['Mono','ui-monospace, monospace'],['Handwritten','"Bradley Hand", "Comic Sans MS", cursive']]
       .map(([n, v]) => `<option value="${esc(v)}" ${th.font === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
@@ -338,12 +573,15 @@ function render(){
     <div class="row" style="margin-top:16px;flex-wrap:wrap"><button id="sv">Save settings</button>
       <button class="ghost" id="nf">${notifOn() ? 'Disable notifications' : 'Enable notifications'}</button><button class="ghost" id="out">Sign out</button></div></div>`;
   }
+
   const vp = photos.find(x => x.id === viewing);
   app.innerHTML = body + (vp ? `<div id="lb"><img src="${urlCache[vp.path] || ''}" alt=""><div class="row"><button class="ghost" id="lbx">Close</button>${vp.owner === me ? '<button id="lbd">Delete</button>' : ''}</div></div>` : '');
   Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
   if (keep[act] !== undefined) $('#' + act)?.focus();
   const on = (id, fn) => $(id) && ($(id).onclick = fn);
+  requestAnimationFrame(() => lgSync());
   on('#tgl', () => { collapsed = !collapsed; ls.set('nav', collapsed ? 'min' : 'max'); render(); });
+
   app.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
     const [e, ...rest] = b.dataset.preset.split(' ');
     save({emoji: e, status: rest.join(' ')}); });
@@ -402,7 +640,7 @@ function render(){
   };
   on('#sv', async () => {
     const th = mine.theme || {}, g = th.global || {};
-    if (await save({name: $('#nm').value, theme: {...th, accent: $('#ac').value, font: $('#ft').value, bg: $('#bgc').value,
+    if (await save({theme: {...th, accent: $('#ac').value, font: $('#ft').value, bg: $('#bgc').value,
       global: {...g, on: $('#gon').checked, type: $('#gt').value}}})) toast('Settings saved');
   });
   on('#nf', async () => {
@@ -421,6 +659,7 @@ function showErr(e){
 }
 addEventListener('unhandledrejection', ev => showErr(ev.reason));
 addEventListener('error', ev => showErr(ev.error || ev.message));
+initNav();
 applyTheme();
 boot().catch(showErr);
 </script></body></html>

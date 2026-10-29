@@ -6,14 +6,19 @@
 <link rel="manifest" href="manifest.json">
 <title>Lovely!</title>
 <style>
-:root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif}
+:root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif;
+--gt:#ffffff52;--gr:#ffffff9a;--lr:#0000001c;--lf:#ffffff80;
+--cap:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Crect width='100' height='100' rx='50'/%3E%3C/svg%3E")}
+:root.dk{--gt:#3a3a4094;--gr:#ffffff2e;--lr:#00000070;--lf:#ffffff26}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom);transition:padding-left .2s}
 main{max-width:480px;margin:0 auto;padding:16px 0 120px}
 #bg{position:fixed;inset:0;z-index:-1}
 #bg img,#bg video{width:100%;height:100%;object-fit:cover}
 .card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px}
-body.media .card{background:color-mix(in srgb,var(--card) 75%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+body.media .card{background:linear-gradient(150deg,#ffffff24,#ffffff06 40%,#ffffff10),color-mix(in srgb,var(--card) 32%,transparent);
+  -webkit-backdrop-filter:blur(6px) saturate(1.8) brightness(1.05);backdrop-filter:blur(6px) saturate(1.8) brightness(1.05);
+  border:1px solid var(--gr);box-shadow:inset 0 1px 0 #ffffff55,inset 0 -1px 1px #0000002b,0 10px 28px #0000003a}
 .hero{text-align:center;padding:28px 16px}.hero .emoji{font-size:56px}.hero h2{margin:6px 0 2px;font-size:26px}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#aaa;margin-right:6px}.dot.on{background:#2fbf71}
 .muted{opacity:.6;font-size:14px}
@@ -21,59 +26,58 @@ h3{margin:20px 0 4px;font-size:17px}label{display:block;margin-top:8px}
 .chk{display:flex;gap:8px;align-items:center}.chk input{width:auto;margin:0}
 button,input,textarea,select{font:inherit;color:inherit}
 input,textarea,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #8883;background:transparent;margin:4px 0}
-button{border:0;border-radius:999px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer}
-button.ghost{background:#8882;color:var(--ink)}
+button{border:0;border-radius:999px;padding:8px 14px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff66,0 4px 16px color-mix(in srgb,var(--accent) 42%,transparent)}
+button.ghost{background:#8882;color:var(--ink);box-shadow:inset 0 1px 0 #ffffff2e}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .row{display:flex;gap:8px}.row>input{flex:1}
 .note{padding:8px 12px;border-radius:16px;margin:6px 0;max-width:85%;background:#8882}
-.note.me{background:var(--accent);color:#fff;margin-left:auto}
-#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--accent);color:#fff;max-width:90vw;box-shadow:0 4px 16px #0004;padding:10px 16px;border-radius:20px;display:none;z-index:30}
+.note.me{background:var(--accent);color:#fff;margin-left:auto;box-shadow:inset 0 1px 0 #ffffff55,0 3px 14px color-mix(in srgb,var(--accent) 38%,transparent)}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:color-mix(in srgb,var(--accent) 72%,transparent);-webkit-backdrop-filter:blur(6px) saturate(1.8);backdrop-filter:blur(6px) saturate(1.8);border:1px solid #ffffff55;color:#fff;max-width:90vw;box-shadow:inset 0 1px 0 #ffffff66,0 6px 26px color-mix(in srgb,var(--accent) 50%,transparent);padding:10px 16px;border-radius:20px;display:none;z-index:30}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
 .grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block;cursor:pointer}
 #lb{position:fixed;inset:0;z-index:20;background:#000e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
 #lb img{max-width:100%;max-height:80vh;border-radius:12px}
 /* navigation */
 #nav{position:fixed;z-index:5;display:flex}
-.ni{background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:8px 14px;border-radius:999px;opacity:.65}
+.nv-track{display:contents}
+.ni{background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;padding:8px 14px;border-radius:999px;opacity:.92}
 .ni.on{opacity:1;background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
-.tgl,.glass-indicator{display:none}
+.tgl,.nv-glass,.lens,.lens-glow{display:none}
 body.nonav #nav{display:none}
 @media(max-width:767px){
-  #nav{left:50%;bottom:calc(env(safe-area-inset-bottom) + 12px);translate:-50% 0;scale:1;padding:6px;gap:0;border-radius:999px;
-    background:var(--glass-tint,rgba(255,255,255,.38));
-    -webkit-backdrop-filter:blur(14px) saturate(200%) brightness(1.04);backdrop-filter:blur(14px) saturate(200%) brightness(1.04);
-    box-shadow:0 12px 32px #0000002e,0 2px 8px #00000014,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff33,inset 0 0 22px #ffffff26;
-    touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
-    transition:scale .5s cubic-bezier(.3,1.5,.5,1)}
-  #nav.is-pressing{scale:1.05}
-  /* specular rim, bright at opposite corners */
-  #nav::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
-    background:linear-gradient(135deg,#fffffff2,#ffffff14 28%,#ffffff0a 62%,#ffffffd9);
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
-    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
-  /* light pooling that follows the lens */
-  #nav::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
-    background:radial-gradient(70px 48px at var(--lx,50%) 50%,#ffffff40,transparent 70%)}
-  #nav .ni{position:relative;z-index:2;transition:color .2s,opacity .2s}
-  #nav .ni svg{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
-  #nav .ni.on{background:transparent}
-  #nav .ni.on svg,#nav .ni.hot svg{transform:scale(1.1)}
-  #nav .ni.hot{color:var(--accent);opacity:1}
-  #nav.is-dragging .ni.on:not(.hot){color:var(--ink);opacity:.65}
-  #nav .glass-indicator{display:block;position:absolute;z-index:1;left:0;top:var(--lt,6px);height:var(--lh,52px);width:64px;
-    border-radius:999px;pointer-events:none;will-change:transform;
-    background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 16%,#ffffff55),color-mix(in srgb,var(--accent) 8%,#ffffff1a));
-    box-shadow:inset 0 1px 1px #ffffffc0,inset 0 -1px 1px #ffffff40,0 2px 8px #00000014;
-    transition:background .25s,box-shadow .25s,backdrop-filter .25s,-webkit-backdrop-filter .25s}
-  /* lifted lens: clearer, brighter, thicker edges, deeper shadow */
-  #nav.lifted .glass-indicator{
-    background:linear-gradient(160deg,#ffffff59,#ffffff12 55%,#ffffff2e);
-    -webkit-backdrop-filter:blur(2px) saturate(220%) brightness(1.12);backdrop-filter:blur(2px) saturate(220%) brightness(1.12);
-    box-shadow:inset 0 0 0 1px #ffffff80,inset 3px 4px 8px #ffffff8c,inset -3px -5px 9px #ffffff33,inset 0 0 14px #0000000d,0 10px 26px #00000033,0 2px 6px #0000001f}
+  #nav{--lx:0px;--ly:0px;--lw:0px;--lh:0px;--lift:0;--ls:1;--nw:0px;--nh:0px;
+    left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);padding:6px;border-radius:999px;
+    touch-action:pan-y;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  .ni{padding:8px 12px;min-width:68px;gap:3px}
+  .ni svg{width:26px;height:26px}
+  #nav .ni.on{background:none;color:var(--accent)}
+  .nv-glass{display:block;position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;
+    background:linear-gradient(160deg,#ffffff26,#ffffff06 38%,#ffffff0a 70%,#ffffff1c),var(--gt);
+    -webkit-backdrop-filter:blur(7px) saturate(1.9) brightness(1.08);backdrop-filter:blur(7px) saturate(1.9) brightness(1.08);
+    border:1px solid var(--gr);
+    box-shadow:inset 0 1px 0 #ffffff59,inset 0 -1px 1px #0000002e,inset 1px 0 0 #ffffff1a,0 12px 32px #0000004d,0 0 30px color-mix(in srgb,var(--accent) 16%,transparent)}
+  .nv-track{display:flex;gap:2px;position:relative;z-index:2;
+    -webkit-mask-image:linear-gradient(#000,#000),var(--cap);mask-image:linear-gradient(#000,#000),var(--cap);
+    -webkit-mask-size:100% 100%,var(--lw) var(--lh);mask-size:100% 100%,var(--lw) var(--lh);
+    -webkit-mask-position:0 0,calc(var(--lx) - 6px) calc(var(--ly) - 6px);mask-position:0 0,calc(var(--lx) - 6px) calc(var(--ly) - 6px);
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-composite:xor;mask-composite:exclude}
+  .lens-glow{display:block;position:absolute;left:0;top:0;z-index:1;pointer-events:none;width:calc(var(--lw) + 40px);height:calc(var(--lh) + 40px);
+    transform:translate3d(calc(var(--lx) - 20px),calc(var(--ly) - 20px),0);opacity:calc(var(--lift) * .6);
+    background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 60%,transparent),transparent)}
+  .lens{display:block;position:absolute;left:0;top:0;z-index:3;pointer-events:none;width:var(--lw);height:var(--lh);
+    transform:translate3d(var(--lx),var(--ly),0);border-radius:999px;overflow:hidden;
+    -webkit-backdrop-filter:blur(1.5px) saturate(1.6) brightness(calc(1 + var(--lift) * .12));backdrop-filter:blur(1.5px) saturate(1.6) brightness(calc(1 + var(--lift) * .12));
+    box-shadow:inset 0 1px 1px var(--lf),inset 0 -1px 2px #00000040,0 6px 18px calc(var(--lift) * 18px) #00000026}
+  .lens::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--lr);opacity:calc(1 - var(--lift) * .82)}
+  .lens::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:2;opacity:var(--lift);
+    box-shadow:inset 0 0 0 1px #00000075,inset 0 0 0 2px #ffffff24,inset 3px 0 4px #4dd8ff44,inset -3px 0 4px #ff4d8d44,inset 0 2px 5px #ffffff55,inset 0 -2px 5px #ffffff22}
+  .lens-in{position:absolute;left:0;top:0;width:var(--nw);height:var(--nh);padding:6px;display:flex;gap:2px;z-index:1;
+    transform-origin:calc(var(--lx) + var(--lw) / 2) calc(var(--ly) + var(--lh) / 2);
+    transform:translate(calc(var(--lx) * -1),calc(var(--ly) * -1)) scale(var(--ls))}
+  .lens-in .ni{opacity:1;background:none;color:var(--accent)}
+  .lens-in .ni svg{filter:drop-shadow(0 0 calc(3px + var(--lift) * 7px) color-mix(in srgb,var(--accent) 65%,transparent))}
 }
-@media(prefers-reduced-motion:reduce){
-  #nav,#nav .ni,#nav .ni svg,#nav .glass-indicator{transition:none!important}
-}
+@media(prefers-reduced-motion:reduce){.lens,.lens-glow{transition:none}}
 @media(min-width:768px){
   #nav{left:0;top:0;bottom:0;width:190px;flex-direction:column;gap:6px;padding:16px 12px;background:var(--card);border-right:1px solid #8882;transition:width .2s}
   .ni{flex-direction:row;gap:12px;font-size:15px;padding:12px 14px;border-radius:14px;width:100%}
@@ -81,6 +85,7 @@ body.nonav #nav{display:none}
   body{padding-left:206px}body.min{padding-left:88px}body.nonav{padding-left:16px}
   body.min #nav{width:72px}body.min .ni span{display:none}body.min .ni{justify-content:center}
   main{max-width:640px;padding-bottom:40px}.grid{grid-template-columns:repeat(4,1fr)}
+  body.media #nav{background:color-mix(in srgb,var(--card) 32%,transparent);-webkit-backdrop-filter:blur(6px) saturate(1.8);backdrop-filter:blur(6px) saturate(1.8);border-right-color:#ffffff30;box-shadow:inset -1px 0 0 #ffffff22}
 }
 </style></head>
 <body class="nonav"><div id="bg"></div><div id="toast"></div><nav id="nav"></nav><main id="app"></main>
@@ -144,11 +149,10 @@ function applyTheme(){
   const media = g.on && g.type !== 'color' && g.path;
   const bg = g.on && g.type === 'color' && th.bg ? th.bg : (sysDark ? '#17131f' : '#f2effa');
   const n = parseInt(bg.slice(1), 16), dark = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255 < 0.5;
-  r.setProperty('--accent', th.accent || '#e0457b');
+  document.documentElement.classList.toggle('dk', dark); r.setProperty('--accent', th.accent || '#e0457b');
   r.setProperty('--bg', bg);
   r.setProperty('--ink', dark ? '#f1eefb' : '#241f33');
   r.setProperty('--card', dark ? 'color-mix(in srgb, ' + bg + ' 85%, white)' : '#fff');
-  r.setProperty('--glass-tint', dark ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.38)');
   r.setProperty('--font', th.font || 'ui-rounded,system-ui,sans-serif');
   setBg(media ? g : null);
 }
@@ -206,7 +210,7 @@ async function heartbeat(){
   await sb.from('profiles').update({last_seen: t}).eq('id', me);
 }
 function login(){
-  document.body.classList.add('nonav'); $('#nav').innerHTML = '';
+  document.body.classList.add('nonav'); $('#nav').innerHTML = ''; delete $('#nav').dataset.built; lens.x = null;
   app.innerHTML = `<div class="card"><h2>Us</h2>
     <input id="em" type="email" placeholder="Email" autocomplete="username">
     <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
@@ -222,104 +226,77 @@ async function save(patch){
   if (error) { toast('Could not save: ' + error.message); return false; }
   Object.assign(people[me], patch); applyTheme(); render(); return true;
 }
-
-/* ===== Liquid glass nav ===== */
-const isDesk = () => matchMedia('(min-width:768px)').matches;
-const navItems = () => [...$('#nav').querySelectorAll('[data-tab]')];
-const lg = {x:0, w:0, s:1, vx:0, vw:0, vs:0, tx:0, tw:0, lift:false, drag:false, raf:0, last:0, init:false};
-const LIFT = 1.16;
-
-function selectTab(t){ if (t !== tab) { tab = t; viewing = null; render(); scrollTo(0, 0); } else lgSync(); }
-
-function buildNav(){
+const tabs = Object.keys(icons), reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches, wide = () => matchMedia('(min-width: 768px)').matches;
+const lens = {x: null, v: 0, tx: 0, lift: 0, lv: 0, down: false, trav: false, follow: false, off: 0, raf: 0, t: 0};
+let G = null;
+const tabHTML = t => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span>`;
+function ensureNav(){
+  const nav = $('#nav'); if (nav.dataset.built) return; nav.dataset.built = '1';
+  nav.innerHTML = '<button class="tgl" id="tgl" aria-label="Collapse menu"></button><span class="nv-glass" aria-hidden="true"></span><i class="lens-glow" aria-hidden="true"></i>' +
+    `<div class="nv-track">${tabs.map(t => `<button class="ni" data-tab="${t}">${tabHTML(t)}</button>`).join('')}</div>` +
+    `<div class="lens" aria-hidden="true"><div class="lens-in">${tabs.map(t => `<div class="ni">${tabHTML(t)}</div>`).join('')}</div></div>`;
+  enableNavSwipe();
+}
+function measure(){
+  const nav = $('#nav'), nr = nav.getBoundingClientRect(); G = {l: {}, w: 0, h: 0, t: 0};
+  nav.querySelectorAll('.nv-track [data-tab]').forEach(b => { const r = b.getBoundingClientRect(); G.l[b.dataset.tab] = r.left - nr.left; G.w = r.width; G.h = r.height; G.t = r.top - nr.top; });
+  nav.style.setProperty('--nw', nr.width + 'px'); nav.style.setProperty('--nh', nr.height + 'px');
+  return G.w > 0;
+}
+function paintLens(){
+  if (!G) return; const st = $('#nav').style, k = lens.lift;
+  st.setProperty('--lw', (G.w + 8 + 18 * k) + 'px'); st.setProperty('--lh', (G.h + 16 * k) + 'px');
+  st.setProperty('--lx', (lens.x - 4 - 9 * k) + 'px'); st.setProperty('--ly', (G.t - 8 * k) + 'px');
+  st.setProperty('--ls', 1 + .2 * k); st.setProperty('--lift', k);
+}
+function stepLens(now){
+  const dt = Math.min(.032, (now - (lens.t || now)) / 1000 || .016); lens.t = now;
+  if (lens.trav && Math.abs(lens.tx - lens.x) < G.w * .12) lens.trav = false;
+  const want = lens.down || lens.trav ? 1 : 0, k = lens.follow ? 900 : 300, c = lens.follow ? 62 : 30;
+  lens.v += ((lens.tx - lens.x) * k - lens.v * c) * dt; lens.x += lens.v * dt;
+  lens.lv += ((want - lens.lift) * 520 - lens.lv * 34) * dt; lens.lift += lens.lv * dt;
+  paintLens();
+  if (Math.abs(lens.tx - lens.x) > .3 || Math.abs(lens.v) > 4 || Math.abs(lens.lift - want) > .004 || Math.abs(lens.lv) > .05) lens.raf = requestAnimationFrame(stepLens);
+  else { lens.x = lens.tx; lens.lift = want; lens.v = lens.lv = lens.t = lens.raf = 0; paintLens(); }
+}
+function kick(){
+  if (reduce()) { lens.x = lens.tx; lens.lift = 0; paintLens(); return; }
+  if (!lens.raf) lens.raf = requestAnimationFrame(stepLens);
+}
+function syncNav(){
   const nav = $('#nav');
-  if (!nav.querySelector('.ni')) nav.innerHTML =
-    '<button class="tgl" id="tgl" aria-label="Collapse menu"></button><span class="glass-indicator" id="lens" aria-hidden="true"></span>' +
-    Object.keys(icons).map(t => `<button class="ni" data-tab="${t}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span></button>`).join('');
-  $('#tgl').textContent = collapsed ? '»' : '«';
-  navItems().forEach(b => {
-    const on = b.dataset.tab === tab; b.classList.toggle('on', on);
-    on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
-  });
+  nav.querySelectorAll('.nv-track [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  const t = $('#tgl'); if (t) t.textContent = collapsed ? '»' : '«';
+  if (wide() || !measure()) return;
+  const first = lens.x === null; lens.tx = G.l[tab];
+  if (first) { lens.x = lens.tx; lens.v = 0; lens.lift = 0; lens.lv = 0; paintLens(); } else kick();
 }
+window.addEventListener('resize', () => { lens.x = null; syncNav(); });
 
-function lgSync(snap){
-  if (isDesk()) return;
-  const items = navItems(), nav = $('#nav'); if (!items.length) return;
-  const b = items.find(x => x.dataset.tab === tab) || items[0];
-  nav.style.setProperty('--lt', items[0].offsetTop + 'px');
-  nav.style.setProperty('--lh', items[0].offsetHeight + 'px');
-  lg.tx = b.offsetLeft; lg.tw = b.offsetWidth;
-  if (!lg.tw) return;
-  if (snap || !lg.init || matchMedia('(prefers-reduced-motion:reduce)').matches) { lg.x = lg.tx; lg.w = lg.tw; lg.init = true; lgPaint(); }
-  else lgStart();
-}
-function setLift(v){ lg.lift = v; $('#nav').classList.toggle('lifted', v); lgStart(); }
-function lgPaint(){
-  const el = $('#lens'); if (!el) return;
-  const st = Math.min(.22, Math.abs(lg.vx) / 2600);           // squash & stretch with speed
-  el.style.width = lg.w + 'px';
-  el.style.transform = `translate3d(${lg.x}px,0,0) scale(${lg.s * (1 + st)},${lg.s * (1 - st * .6)})`;
-  $('#nav').style.setProperty('--lx', (lg.x + lg.w / 2) + 'px');
-}
-function lgStart(){ if (!lg.raf) { lg.last = performance.now(); lg.raf = requestAnimationFrame(lgFrame); } }
-function lgFrame(now){
-  const dt = Math.min(.032, (now - lg.last) / 1000); lg.last = now;
-  const sp = (p, v, t, k, c) => { v += (-k * (p - t) - c * v) * dt; return [p + v * dt, v]; };
-  const ts = lg.lift ? LIFT : 1;
-  [lg.x, lg.vx] = sp(lg.x, lg.vx, lg.tx, lg.drag ? 520 : 300, lg.drag ? 34 : 21);
-  [lg.w, lg.vw] = sp(lg.w, lg.vw, lg.tw, 300, 24);
-  [lg.s, lg.vs] = sp(lg.s, lg.vs, ts, 320, 17);
-  lgPaint();
-  const rest = Math.abs(lg.x - lg.tx) < .1 && Math.abs(lg.vx) < .5 && Math.abs(lg.w - lg.tw) < .1 &&
-               Math.abs(lg.vw) < .5 && Math.abs(lg.s - ts) < .002 && Math.abs(lg.vs) < .01;
-  if (rest && !lg.drag) { lg.x = lg.tx; lg.w = lg.tw; lg.s = ts; lg.vx = lg.vw = lg.vs = 0; lgPaint(); lg.raf = 0; return; }
-  lg.raf = requestAnimationFrame(lgFrame);
-}
-
-function initNav(){
-  const nav = $('#nav'); let pid = null, sx = 0, grab = 0, startBtn = null, dragging = false;
-  const local = e => { const r = nav.getBoundingClientRect(); return (e.clientX - r.left) / (r.width / nav.offsetWidth); };
-  const near = cx => navItems().reduce((a, b) => Math.abs(b.offsetLeft + b.offsetWidth / 2 - cx) < Math.abs(a.offsetLeft + a.offsetWidth / 2 - cx) ? b : a);
-  const hot = b => navItems().forEach(x => x.classList.toggle('hot', x === b));
-
+function enableNavSwipe(){
+  const nav = $('#nav'); let id = null, sx = 0, moved = false, skip = false;
+  const nearest = x => tabs.reduce((a, t) => Math.abs(G.l[t] + G.w / 2 - x) < Math.abs(G.l[a] + G.w / 2 - x) ? t : a, tabs[0]);
+  const go = t => { if (t === tab) return false; tab = t; viewing = null; render(); scrollTo(0, 0); return true; };
   nav.addEventListener('pointerdown', e => {
-    if (isDesk() || !e.isPrimary || pid !== null) return;
-    const b = e.target.closest('[data-tab]'); if (!b) return;
-    pid = e.pointerId; nav.setPointerCapture(pid); startBtn = b; sx = local(e); dragging = false;
-    nav.classList.add('is-pressing');
-    const onLens = b.dataset.tab === tab;
-    grab = onLens ? sx - lg.x : lg.w / 2;
-    if (onLens) setLift(true);
+    if (wide() || !e.isPrimary || e.button !== 0 || !e.target.closest('[data-tab]') || !measure()) return;
+    id = e.pointerId; sx = e.clientX; moved = false; lens.down = true; kick();
   });
   nav.addEventListener('pointermove', e => {
-    if (e.pointerId !== pid) return;
-    const x = local(e);
-    if (!dragging && Math.abs(x - sx) > 6) { dragging = true; lg.drag = true; nav.classList.add('is-dragging'); setLift(true); }
-    if (!dragging) return;
-    const items = navItems(), min = items[0].offsetLeft, max = items.at(-1).offsetLeft + items.at(-1).offsetWidth - lg.w;
-    let left = x - grab;
-    if (left < min) left = min - (min - left) * .25;           // rubber-band at the ends
-    if (left > max) left = max + (left - max) * .25;
-    const h = near(left + lg.w / 2);
-    lg.tx = left; lg.tw = h.offsetWidth; hot(h); lgStart();
+    if (id !== e.pointerId) return;
+    const r = nav.getBoundingClientRect();
+    if (!moved && Math.abs(e.clientX - sx) > 8) { moved = true; lens.follow = true; lens.off = lens.x + G.w / 2 - (sx - r.left); nav.setPointerCapture?.(id); }
+    if (moved) { lens.tx = Math.max(G.l[tabs[0]], Math.min(G.l[tabs[tabs.length - 1]], e.clientX - r.left + lens.off - G.w / 2)); kick(); }
   });
-  const end = cancel => e => {
-    if (e.pointerId !== pid) return;
-    const target = cancel ? null : dragging ? near(lg.x + lg.w / 2) : startBtn;
-    pid = null; dragging = false; lg.drag = false; startBtn = null;
-    nav.classList.remove('is-pressing', 'is-dragging'); hot(null); setLift(false);
-    if (target) selectTab(target.dataset.tab); else lgSync();
+  const end = e => {
+    if (id !== e.pointerId) return; id = null; lens.down = false; lens.follow = false;
+    if (moved) { skip = true; setTimeout(() => skip = false); lens.trav = true; if (!go(nearest(lens.x + G.w / 2))) { lens.tx = G.l[tab]; kick(); } }
+    else kick();
   };
-  nav.addEventListener('pointerup', end(false));
-  nav.addEventListener('pointercancel', end(true));
-  // keyboard + desktop sidebar (touch taps are handled by pointer events above)
+  nav.addEventListener('pointerup', end); nav.addEventListener('pointercancel', end);
   nav.addEventListener('click', e => {
-    const b = e.target.closest('[data-tab]'); if (!b) return;
-    if (!isDesk() && e.detail > 0) return;
-    selectTab(b.dataset.tab);
+    const b = e.target.closest('.nv-track [data-tab]'); if (!b || skip) return;
+    lens.trav = !wide(); go(b.dataset.tab);
   });
-  new ResizeObserver(() => lgSync(true)).observe(nav);
 }
 
 function render(){
@@ -327,7 +304,7 @@ function render(){
   ['nt','ne','nx'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
   const p = partner(), mine = people[me], presets = mine.theme?.presets || defPresets;
   document.body.classList.toggle('min', collapsed);
-  buildNav();
+  ensureNav(); syncNav();
   let body = '';
   if (tab === 'home') body = `
     <div class="card hero">${p ? `<div class="emoji">${esc(p.emoji)}</div><h2>${esc(p.name)}</h2>
@@ -370,7 +347,6 @@ function render(){
   Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
   if (keep[act] !== undefined) $('#' + act)?.focus();
   const on = (id, fn) => $(id) && ($(id).onclick = fn);
-  requestAnimationFrame(() => lgSync());
   on('#tgl', () => { collapsed = !collapsed; ls.set('nav', collapsed ? 'min' : 'max'); render(); });
   app.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
     const [e, ...rest] = b.dataset.preset.split(' ');
@@ -449,7 +425,6 @@ function showErr(e){
 }
 addEventListener('unhandledrejection', ev => showErr(ev.reason));
 addEventListener('error', ev => showErr(ev.error || ev.message));
-initNav();
 applyTheme();
 boot().catch(showErr);
 </script></body></html>

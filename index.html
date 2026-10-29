@@ -36,33 +36,43 @@ button.ghost{background:#8882;color:var(--ink)}
 #nav{position:fixed;z-index:5;display:flex}
 .ni{background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:8px 14px;border-radius:999px;opacity:.65}
 .ni.on{opacity:1;background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
-.tgl{display:none}
+.tgl,.glass-indicator{display:none}
 body.nonav #nav{display:none}
 @media(max-width:767px){
-  #nav{left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);gap:2px;padding:6px;border-radius:999px;
-    background:linear-gradient(135deg,color-mix(in srgb,var(--card) 64%,transparent),color-mix(in srgb,var(--card) 42%,transparent));
-    -webkit-backdrop-filter:blur(26px) saturate(190%);backdrop-filter:blur(26px) saturate(190%);
-    border:1px solid #ffffff55;box-shadow:0 8px 28px #0003,inset 0 1px 0 #ffffff70;
-    isolation:isolate;overflow:hidden;touch-action:pan-y; -webkit-tap-highlight-color:transparent}
-  #nav::after{content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;
-    background:linear-gradient(150deg,#ffffff25,transparent 42%,#ffffff0b);z-index:0}
-  #nav .ni{position:relative;z-index:2;transition:color .22s ease,opacity .22s ease,transform .22s ease;user-select:none}
-  #nav .ni:active{transform:scale(.94)}
-  #nav.is-pressing .glass-indicator{filter:saturate(1.18);box-shadow:inset 0 1px 2px #ffffffb8,0 3px 12px #00000018}
-  #nav .ni.on{background:transparent;color:var(--accent);opacity:1}
-  #nav .glass-indicator{position:absolute;z-index:1;left:6px;top:6px;height:calc(100% - 12px);width:var(--indicator-width,64px);
-    transform:translateX(var(--indicator-x,0px));border-radius:999px;pointer-events:none;
-    background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 23%,#ffffff75),color-mix(in srgb,var(--accent) 13%,transparent));
-    border:1px solid #ffffff75;box-shadow:inset 0 1px 1px #ffffff9c,0 2px 8px #0000000c;
-    transition:transform .34s cubic-bezier(.2,.85,.25,1),width .34s cubic-bezier(.2,.85,.25,1);
-    overflow:hidden}
-  #nav .glass-indicator::after{content:"";position:absolute;inset:0;border-radius:inherit;
-    background:linear-gradient(110deg,transparent 20%,#ffffff65 48%,transparent 76%);opacity:.55;transform:translateX(-100%);
-    transition:transform .45s ease}
-  #nav.glass-glide .glass-indicator::after{transform:translateX(100%)}
+  #nav{left:50%;bottom:calc(env(safe-area-inset-bottom) + 12px);translate:-50% 0;scale:1;padding:6px;gap:0;border-radius:999px;
+    background:var(--glass-tint,rgba(255,255,255,.38));
+    -webkit-backdrop-filter:blur(14px) saturate(200%) brightness(1.04);backdrop-filter:blur(14px) saturate(200%) brightness(1.04);
+    box-shadow:0 12px 32px #0000002e,0 2px 8px #00000014,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff33,inset 0 0 22px #ffffff26;
+    touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+    transition:scale .5s cubic-bezier(.3,1.5,.5,1)}
+  #nav.is-pressing{scale:1.05}
+  /* specular rim, bright at opposite corners */
+  #nav::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
+    background:linear-gradient(135deg,#fffffff2,#ffffff14 28%,#ffffff0a 62%,#ffffffd9);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+  /* light pooling that follows the lens */
+  #nav::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+    background:radial-gradient(70px 48px at var(--lx,50%) 50%,#ffffff40,transparent 70%)}
+  #nav .ni{position:relative;z-index:2;transition:color .2s,opacity .2s}
+  #nav .ni svg{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+  #nav .ni.on{background:transparent}
+  #nav .ni.on svg,#nav .ni.hot svg{transform:scale(1.1)}
+  #nav .ni.hot{color:var(--accent);opacity:1}
+  #nav.is-dragging .ni.on:not(.hot){color:var(--ink);opacity:.65}
+  #nav .glass-indicator{display:block;position:absolute;z-index:1;left:0;top:var(--lt,6px);height:var(--lh,52px);width:64px;
+    border-radius:999px;pointer-events:none;will-change:transform;
+    background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 16%,#ffffff55),color-mix(in srgb,var(--accent) 8%,#ffffff1a));
+    box-shadow:inset 0 1px 1px #ffffffc0,inset 0 -1px 1px #ffffff40,0 2px 8px #00000014;
+    transition:background .25s,box-shadow .25s,backdrop-filter .25s,-webkit-backdrop-filter .25s}
+  /* lifted lens: clearer, brighter, thicker edges, deeper shadow */
+  #nav.lifted .glass-indicator{
+    background:linear-gradient(160deg,#ffffff59,#ffffff12 55%,#ffffff2e);
+    -webkit-backdrop-filter:blur(2px) saturate(220%) brightness(1.12);backdrop-filter:blur(2px) saturate(220%) brightness(1.12);
+    box-shadow:inset 0 0 0 1px #ffffff80,inset 3px 4px 8px #ffffff8c,inset -3px -5px 9px #ffffff33,inset 0 0 14px #0000000d,0 10px 26px #00000033,0 2px 6px #0000001f}
 }
 @media(prefers-reduced-motion:reduce){
-  #nav .ni,#nav .glass-indicator,#nav .glass-indicator::after{transition:none!important}
+  #nav,#nav .ni,#nav .ni svg,#nav .glass-indicator{transition:none!important}
 }
 @media(min-width:768px){
   #nav{left:0;top:0;bottom:0;width:190px;flex-direction:column;gap:6px;padding:16px 12px;background:var(--card);border-right:1px solid #8882;transition:width .2s}
@@ -138,6 +148,7 @@ function applyTheme(){
   r.setProperty('--bg', bg);
   r.setProperty('--ink', dark ? '#f1eefb' : '#241f33');
   r.setProperty('--card', dark ? 'color-mix(in srgb, ' + bg + ' 85%, white)' : '#fff');
+  r.setProperty('--glass-tint', dark ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.38)');
   r.setProperty('--font', th.font || 'ui-rounded,system-ui,sans-serif');
   setBg(media ? g : null);
 }
@@ -211,54 +222,104 @@ async function save(patch){
   if (error) { toast('Could not save: ' + error.message); return false; }
   Object.assign(people[me], patch); applyTheme(); render(); return true;
 }
-function updateNavIndicator(){
-  const nav = $('#nav'), indicator = nav?.querySelector('.glass-indicator');
-  if (!nav || !indicator || window.matchMedia('(min-width: 768px)').matches) return;
-  const active = nav.querySelector(`[data-tab="${tab}"]`);
-  if (!active) return;
-  const nr = nav.getBoundingClientRect(), ar = active.getBoundingClientRect();
-  nav.style.setProperty('--indicator-x', `${ar.left - nr.left}px`);
-  nav.style.setProperty('--indicator-width', `${ar.width}px`);
-}
-window.addEventListener('resize', updateNavIndicator);
 
-function enableNavSwipe(){
+/* ===== Liquid glass nav ===== */
+const isDesk = () => matchMedia('(min-width:768px)').matches;
+const navItems = () => [...$('#nav').querySelectorAll('[data-tab]')];
+const lg = {x:0, w:0, s:1, vx:0, vw:0, vs:0, tx:0, tw:0, lift:false, drag:false, raf:0, last:0, init:false};
+const LIFT = 1.16;
+
+function selectTab(t){ if (t !== tab) { tab = t; viewing = null; render(); scrollTo(0, 0); } else lgSync(); }
+
+function buildNav(){
   const nav = $('#nav');
-  if (!nav || nav.dataset.swipeReady) return;
-  nav.dataset.swipeReady = '1';
-  let pointerId = null, startX = 0, startY = 0, lastTarget = null, moved = false;
-  const pick = x => {
-    const buttons = [...nav.querySelectorAll('[data-tab]')];
-    return buttons.find(b => { const r = b.getBoundingClientRect(); return x >= r.left && x <= r.right; }) || null;
-  };
+  if (!nav.querySelector('.ni')) nav.innerHTML =
+    '<button class="tgl" id="tgl" aria-label="Collapse menu"></button><span class="glass-indicator" id="lens" aria-hidden="true"></span>' +
+    Object.keys(icons).map(t => `<button class="ni" data-tab="${t}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span></button>`).join('');
+  $('#tgl').textContent = collapsed ? '»' : '«';
+  navItems().forEach(b => {
+    const on = b.dataset.tab === tab; b.classList.toggle('on', on);
+    on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
+  });
+}
+
+function lgSync(snap){
+  if (isDesk()) return;
+  const items = navItems(), nav = $('#nav'); if (!items.length) return;
+  const b = items.find(x => x.dataset.tab === tab) || items[0];
+  nav.style.setProperty('--lt', items[0].offsetTop + 'px');
+  nav.style.setProperty('--lh', items[0].offsetHeight + 'px');
+  lg.tx = b.offsetLeft; lg.tw = b.offsetWidth;
+  if (!lg.tw) return;
+  if (snap || !lg.init || matchMedia('(prefers-reduced-motion:reduce)').matches) { lg.x = lg.tx; lg.w = lg.tw; lg.init = true; lgPaint(); }
+  else lgStart();
+}
+function setLift(v){ lg.lift = v; $('#nav').classList.toggle('lifted', v); lgStart(); }
+function lgPaint(){
+  const el = $('#lens'); if (!el) return;
+  const st = Math.min(.22, Math.abs(lg.vx) / 2600);           // squash & stretch with speed
+  el.style.width = lg.w + 'px';
+  el.style.transform = `translate3d(${lg.x}px,0,0) scale(${lg.s * (1 + st)},${lg.s * (1 - st * .6)})`;
+  $('#nav').style.setProperty('--lx', (lg.x + lg.w / 2) + 'px');
+}
+function lgStart(){ if (!lg.raf) { lg.last = performance.now(); lg.raf = requestAnimationFrame(lgFrame); } }
+function lgFrame(now){
+  const dt = Math.min(.032, (now - lg.last) / 1000); lg.last = now;
+  const sp = (p, v, t, k, c) => { v += (-k * (p - t) - c * v) * dt; return [p + v * dt, v]; };
+  const ts = lg.lift ? LIFT : 1;
+  [lg.x, lg.vx] = sp(lg.x, lg.vx, lg.tx, lg.drag ? 520 : 300, lg.drag ? 34 : 21);
+  [lg.w, lg.vw] = sp(lg.w, lg.vw, lg.tw, 300, 24);
+  [lg.s, lg.vs] = sp(lg.s, lg.vs, ts, 320, 17);
+  lgPaint();
+  const rest = Math.abs(lg.x - lg.tx) < .1 && Math.abs(lg.vx) < .5 && Math.abs(lg.w - lg.tw) < .1 &&
+               Math.abs(lg.vw) < .5 && Math.abs(lg.s - ts) < .002 && Math.abs(lg.vs) < .01;
+  if (rest && !lg.drag) { lg.x = lg.tx; lg.w = lg.tw; lg.s = ts; lg.vx = lg.vw = lg.vs = 0; lgPaint(); lg.raf = 0; return; }
+  lg.raf = requestAnimationFrame(lgFrame);
+}
+
+function initNav(){
+  const nav = $('#nav'); let pid = null, sx = 0, grab = 0, startBtn = null, dragging = false;
+  const local = e => { const r = nav.getBoundingClientRect(); return (e.clientX - r.left) / (r.width / nav.offsetWidth); };
+  const near = cx => navItems().reduce((a, b) => Math.abs(b.offsetLeft + b.offsetWidth / 2 - cx) < Math.abs(a.offsetLeft + a.offsetWidth / 2 - cx) ? b : a);
+  const hot = b => navItems().forEach(x => x.classList.toggle('hot', x === b));
+
   nav.addEventListener('pointerdown', e => {
-    if (window.matchMedia('(min-width: 768px)').matches || !e.isPrimary || e.button !== 0) return;
-    const target = e.target.closest('[data-tab]');
-    if (!target) return;
-    pointerId = e.pointerId; startX = e.clientX; startY = e.clientY; lastTarget = target; moved = false;
+    if (isDesk() || !e.isPrimary || pid !== null) return;
+    const b = e.target.closest('[data-tab]'); if (!b) return;
+    pid = e.pointerId; nav.setPointerCapture(pid); startBtn = b; sx = local(e); dragging = false;
     nav.classList.add('is-pressing');
+    const onLens = b.dataset.tab === tab;
+    grab = onLens ? sx - lg.x : lg.w / 2;
+    if (onLens) setLift(true);
   });
   nav.addEventListener('pointermove', e => {
-    if (pointerId !== e.pointerId) return;
-    const dx = e.clientX - startX, dy = e.clientY - startY;
-    if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-      moved = true;
-      const target = pick(e.clientX);
-      if (target && target !== lastTarget) {
-        lastTarget = target;
-        tab = target.dataset.tab; viewing = null; render(); scrollTo(0, 0);
-      }
-    }
+    if (e.pointerId !== pid) return;
+    const x = local(e);
+    if (!dragging && Math.abs(x - sx) > 6) { dragging = true; lg.drag = true; nav.classList.add('is-dragging'); setLift(true); }
+    if (!dragging) return;
+    const items = navItems(), min = items[0].offsetLeft, max = items.at(-1).offsetLeft + items.at(-1).offsetWidth - lg.w;
+    let left = x - grab;
+    if (left < min) left = min - (min - left) * .25;           // rubber-band at the ends
+    if (left > max) left = max + (left - max) * .25;
+    const h = near(left + lg.w / 2);
+    lg.tx = left; lg.tw = h.offsetWidth; hot(h); lgStart();
   });
-  const release = e => {
-    if (pointerId !== e.pointerId) return;
-    if (moved && lastTarget) {
-      tab = lastTarget.dataset.tab; viewing = null; render(); scrollTo(0, 0);
-    }
-    pointerId = null; nav.classList.remove('is-pressing');
+  const end = cancel => e => {
+    if (e.pointerId !== pid) return;
+    const target = cancel ? null : dragging ? near(lg.x + lg.w / 2) : startBtn;
+    pid = null; dragging = false; lg.drag = false; startBtn = null;
+    nav.classList.remove('is-pressing', 'is-dragging'); hot(null); setLift(false);
+    if (target) selectTab(target.dataset.tab); else lgSync();
   };
-  nav.addEventListener('pointerup', release);
-  nav.addEventListener('pointercancel', release);
+  nav.addEventListener('pointerup', end(false));
+  nav.addEventListener('pointercancel', end(true));
+  // keyboard + desktop sidebar (touch taps are handled by pointer events above)
+  nav.addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b) return;
+    if (!isDesk() && e.detail > 0) return;
+    selectTab(b.dataset.tab);
+  });
+  new ResizeObserver(() => lgSync(true)).observe(nav);
 }
 
 function render(){
@@ -266,10 +327,7 @@ function render(){
   ['nt','ne','nx'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
   const p = partner(), mine = people[me], presets = mine.theme?.presets || defPresets;
   document.body.classList.toggle('min', collapsed);
-  $('#nav').innerHTML = `<button class="tgl" id="tgl" aria-label="Collapse menu">${collapsed ? '»' : '«'}</button><span class="glass-indicator" aria-hidden="true"></span>` +
-    Object.keys(icons).map(t => `<button class="ni ${tab === t ? 'on' : ''}" data-tab="${t}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span></button>`).join('');
-  updateNavIndicator();
-  enableNavSwipe();
+  buildNav();
   let body = '';
   if (tab === 'home') body = `
     <div class="card hero">${p ? `<div class="emoji">${esc(p.emoji)}</div><h2>${esc(p.name)}</h2>
@@ -312,13 +370,7 @@ function render(){
   Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
   if (keep[act] !== undefined) $('#' + act)?.focus();
   const on = (id, fn) => $(id) && ($(id).onclick = fn);
-  $('#nav').querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
-    if (tab === b.dataset.tab) return;
-    tab = b.dataset.tab; viewing = null; render(); scrollTo(0, 0);
-    const nav = $('#nav'); nav?.classList.add('glass-glide');
-    setTimeout(() => nav?.classList.remove('glass-glide'), 460);
-  });
-  requestAnimationFrame(updateNavIndicator);
+  requestAnimationFrame(() => lgSync());
   on('#tgl', () => { collapsed = !collapsed; ls.set('nav', collapsed ? 'min' : 'max'); render(); });
   app.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
     const [e, ...rest] = b.dataset.preset.split(' ');
@@ -397,6 +449,7 @@ function showErr(e){
 }
 addEventListener('unhandledrejection', ev => showErr(ev.reason));
 addEventListener('error', ev => showErr(ev.error || ev.message));
+initNav();
 applyTheme();
 boot().catch(showErr);
 </script></body></html>

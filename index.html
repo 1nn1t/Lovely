@@ -4,18 +4,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
-<title>Us</title>
+<title>Lovely!</title>
 <style>
 :root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
-main{max-width:480px;margin:0 auto;padding:16px 0 40px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom);transition:padding-left .2s}
+main{max-width:480px;margin:0 auto;padding:16px 0 120px}
+#bg{position:fixed;inset:0;z-index:-1}
+#bg img,#bg video{width:100%;height:100%;object-fit:cover}
 .card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px}
-.hero{text-align:center;padding:28px 16px}
-.hero .emoji{font-size:56px}.hero h2{margin:6px 0 2px;font-size:26px}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#aaa;margin-right:6px}
-.dot.on{background:#2fbf71}
+body.media .card{background:color-mix(in srgb,var(--card) 75%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.hero{text-align:center;padding:28px 16px}.hero .emoji{font-size:56px}.hero h2{margin:6px 0 2px;font-size:26px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#aaa;margin-right:6px}.dot.on{background:#2fbf71}
 .muted{opacity:.6;font-size:14px}
+h3{margin:20px 0 4px;font-size:17px}label{display:block;margin-top:8px}
+.chk{display:flex;gap:8px;align-items:center}.chk input{width:auto;margin:0}
 button,input,textarea,select{font:inherit;color:inherit}
 input,textarea,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #8883;background:transparent;margin:4px 0}
 button{border:0;border-radius:999px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer}
@@ -24,40 +27,98 @@ button.ghost{background:#8882;color:var(--ink)}
 .row{display:flex;gap:8px}.row>input{flex:1}
 .note{padding:8px 12px;border-radius:16px;margin:6px 0;max-width:85%;background:#8882}
 .note.me{background:var(--accent);color:#fff;margin-left:auto}
-#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--accent);color:#fff;max-width:90vw;box-shadow:0 4px 16px #0004;padding:10px 16px;border-radius:20px;display:none;z-index:9}
-.tabs{display:flex;gap:8px;margin-bottom:14px}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--accent);color:#fff;max-width:90vw;box-shadow:0 4px 16px #0004;padding:10px 16px;border-radius:20px;display:none;z-index:30}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block;cursor:pointer}
+#lb{position:fixed;inset:0;z-index:20;background:#000e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
+#lb img{max-width:100%;max-height:80vh;border-radius:12px}
+/* navigation */
+#nav{position:fixed;z-index:5;display:flex}
+.ni{background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:8px 14px;border-radius:999px;opacity:.65}
+.ni.on{opacity:1;background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
+.tgl{display:none}
+body.nonav #nav{display:none}
+@media(max-width:767px){
+  #nav{left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);gap:2px;padding:6px;border-radius:999px;
+    background:color-mix(in srgb,var(--card) 70%,transparent);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid #fff4;box-shadow:0 8px 28px #0003}
+}
+@media(min-width:768px){
+  #nav{left:0;top:0;bottom:0;width:190px;flex-direction:column;gap:6px;padding:16px 12px;background:var(--card);border-right:1px solid #8882;transition:width .2s}
+  .ni{flex-direction:row;gap:12px;font-size:15px;padding:12px 14px;border-radius:14px;width:100%}
+  .tgl{display:block;align-self:flex-end;background:none;color:var(--ink);padding:4px 10px;margin-bottom:8px;opacity:.6}
+  body{padding-left:206px}body.min{padding-left:88px}body.nonav{padding-left:16px}
+  body.min #nav{width:72px}body.min .ni span{display:none}body.min .ni{justify-content:center}
+  main{max-width:640px;padding-bottom:40px}.grid{grid-template-columns:repeat(4,1fr)}
+}
 </style></head>
-<body><div id="toast"></div><main id="app"></main>
+<body class="nonav"><div id="bg"></div><div id="toast"></div><nav id="nav"></nav><main id="app"></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <script>
-// 1) Paste your Supabase project values (Project Settings -> API)
 const SUPABASE_URL = 'https://vffhgnflcrlddodldprn.supabase.co', SUPABASE_KEY = 'sb_publishable_ucjyfX7n8IKT5TtUyGZVUw_VKeqjj3L';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = s => document.querySelector(s), app = $('#app');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let me, people = {}, notes = [], tab = 'home';
+const ls = {get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} }};
+let me, people = {}, notes = [], photos = [], photoErr = '', tab = 'home', adding = false, viewing = null, collapsed = ls.get('nav') === 'min';
+const urlCache = {};
 const partner = () => Object.values(people).find(p => p.id !== me);
 const online = p => p && Date.now() - new Date(p.last_seen) < 75000;
 const defPresets = ["💼 Working","😴 Sleeping","🍽️ Eating","🚗 Commuting","🎮 Playing"];
+const seg = s => [...new Intl.Segmenter(undefined, {granularity: 'grapheme'}).segment((s || '').trim())].map(x => x.segment);
+const isEmoji = g => /\p{Extended_Pictographic}/u.test(g);
+const emojiKey = s => { const g = seg(s)[0] || ''; return isEmoji(g) ? g.replace(/\uFE0F/g, '') : ''; };
+const notifOn = () => 'Notification' in window && Notification.permission === 'granted' && ls.get('notif') !== 'off';
+const icons = {
+  home: '<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',
+  notes: '<path d="M4 5h16v11H9l-5 4z"/>',
+  photos: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-4 4 3 3-2 4 3"/>',
+  settings: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'};
+const labels = {home: 'Home', notes: 'Notes', photos: 'Photos', settings: 'Settings'};
 
 function toast(msg, sys){
   const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
   clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', 4000);
-  if (sys && 'Notification' in window && Notification.permission === 'granted' && document.hidden)
+  if (sys && notifOn() && document.hidden)
     navigator.serviceWorker?.ready.then(r => r.showNotification(sys.title, {body: sys.body}));
+}
+async function signed(paths){
+  const need = paths.filter(p => !urlCache[p]);
+  if (need.length) {
+    const { data } = await sb.storage.from('media').createSignedUrls(need, 86400);
+    (data || []).forEach(d => { if (d.signedUrl) urlCache[d.path] = d.signedUrl; });
+  }
+  return urlCache;
+}
+async function upload(f, folder){
+  const ext = (f.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const path = `${me}/${folder}/${crypto.randomUUID()}.${ext}`;
+  const { error } = await sb.storage.from('media').upload(path, f, {contentType: f.type});
+  if (error) { toast('Upload failed: ' + error.message); return null; }
+  return path;
+}
+async function setBg(g){
+  const el = $('#bg'), key = g ? g.type + g.path : '';
+  if (el.dataset.k === key) return;
+  el.dataset.k = key; el.innerHTML = ''; document.body.classList.toggle('media', !!g);
+  if (!g) return;
+  const u = (await signed([g.path]))[g.path];
+  if (!u) { el.dataset.k = ''; return; }
+  el.innerHTML = g.type === 'video' ? `<video src="${u}" autoplay loop muted playsinline></video>` : `<img src="${u}" alt="">`;
 }
 function applyTheme(){
   const th = people[me]?.theme || {}, r = document.documentElement.style;
+  const g = th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
   const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
-  const custom = th.bg && th.bg.toLowerCase() !== '#f2effa';
-  const bg = custom ? th.bg : (sysDark ? '#17131f' : '#f2effa');
-  const n = parseInt(bg.slice(1), 16), lum = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
-  const dark = lum < 0.5;
+  const media = g.on && g.type !== 'color' && g.path;
+  const bg = g.on && g.type === 'color' && th.bg ? th.bg : (sysDark ? '#17131f' : '#f2effa');
+  const n = parseInt(bg.slice(1), 16), dark = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255 < 0.5;
   r.setProperty('--accent', th.accent || '#e0457b');
   r.setProperty('--bg', bg);
   r.setProperty('--ink', dark ? '#f1eefb' : '#241f33');
   r.setProperty('--card', dark ? 'color-mix(in srgb, ' + bg + ' 85%, white)' : '#fff');
   r.setProperty('--font', th.font || 'ui-rounded,system-ui,sans-serif');
+  setBg(media ? g : null);
 }
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 
@@ -65,7 +126,7 @@ async function boot(){
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
   const { data: { session } } = await sb.auth.getSession();
   if (!session) return login();
-  me = session.user.id;
+  me = session.user.id; document.body.classList.remove('nonav');
   let { data: ps, error: pe } = await sb.from('profiles').select('*');
   if (pe) throw pe;
   if (!ps.some(p => p.id === me)) {
@@ -78,6 +139,9 @@ async function boot(){
   const { data: ns, error: ne } = await sb.from('notes').select('*').order('created_at').limit(100);
   if (ne) throw ne;
   notes = ns;
+  const { data: ph, error: phe } = await sb.from('photos').select('*').order('created_at', {ascending: false}).limit(200);
+  photos = ph || []; photoErr = phe ? phe.message : '';
+  if (photos.length) await signed(photos.map(x => x.path));
   sb.channel('us')
     .on('postgres_changes', {event:'*', schema:'public', table:'profiles'}, ({new: p}) => {
       const old = people[p.id]; people[p.id] = p;
@@ -85,14 +149,20 @@ async function boot(){
         toast(`${p.name} updated their Status to: ${p.emoji} ${p.status}`, {title: p.name, body: `updated their Status to: ${p.emoji} ${p.status}`});
       if (p.id === me) applyTheme();
       const same = old && old.status === p.status && old.emoji === p.emoji && old.name === p.name && JSON.stringify(old.theme) === JSON.stringify(p.theme);
+      if (tab === 'settings' && (same || p.id !== me)) return;
       if (!(same && /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))) render();
     })
     .on('postgres_changes', {event:'INSERT', schema:'public', table:'notes'}, ({new: n}) => {
       if (notes.some(x => x.id === n.id)) return;
       notes.push(n);
       if (n.from_id !== me) { const nm = people[n.from_id]?.name || 'Your partner'; toast(`${nm} sent you a Note!`, {title: nm, body: 'sent you a Note!'}); }
-      render();
+      if (tab === 'notes') render();
     }).subscribe();
+  sb.channel('us-photos').on('postgres_changes', {event:'*', schema:'public', table:'photos'}, async e => {
+    if (e.eventType === 'DELETE') photos = photos.filter(x => x.id !== e.old.id);
+    else if (e.eventType === 'INSERT' && !photos.some(x => x.id === e.new.id)) { await signed([e.new.path]); photos.unshift(e.new); }
+    if (tab === 'photos') render();
+  }).subscribe();
   heartbeat(); setInterval(heartbeat, 30000);
   document.addEventListener('visibilitychange', heartbeat);
   applyTheme(); render();
@@ -104,6 +174,7 @@ async function heartbeat(){
   await sb.from('profiles').update({last_seen: t}).eq('id', me);
 }
 function login(){
+  document.body.classList.add('nonav'); $('#nav').innerHTML = '';
   app.innerHTML = `<div class="card"><h2>Us</h2>
     <input id="em" type="email" placeholder="Email" autocomplete="username">
     <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
@@ -114,10 +185,6 @@ function login(){
     if (error) $('#err').textContent = error.message; else boot().catch(showErr);
   };
 }
-const seg = s => [...new Intl.Segmenter(undefined, {granularity: 'grapheme'}).segment((s || '').trim())].map(x => x.segment);
-const isEmoji = g => /\p{Extended_Pictographic}/u.test(g);
-const emojiKey = s => { const g = seg(s)[0] || ''; return isEmoji(g) ? g.replace(/\uFE0F/g, '') : ''; };
-let adding = false;
 async function save(patch){
   const { error } = await sb.from('profiles').update(patch).eq('id', me);
   if (error) { toast('Could not save: ' + error.message); return false; }
@@ -127,13 +194,14 @@ function render(){
   const act = document.activeElement?.id, keep = {};
   ['nt','ne','nx'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
   const p = partner(), mine = people[me], presets = mine.theme?.presets || defPresets;
-  const nav = `<div class="tabs">${['home','notes','settings'].map(t =>
-    `<button class="${tab===t?'':'ghost'}" data-tab="${t}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div>`;
+  document.body.classList.toggle('min', collapsed);
+  $('#nav').innerHTML = `<button class="tgl" id="tgl" aria-label="Collapse menu">${collapsed ? '»' : '«'}</button>` +
+    Object.keys(icons).map(t => `<button class="ni ${tab === t ? 'on' : ''}" data-tab="${t}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span></button>`).join('');
   let body = '';
   if (tab === 'home') body = `
     <div class="card hero">${p ? `<div class="emoji">${esc(p.emoji)}</div><h2>${esc(p.name)}</h2>
       <div>${esc(p.status)}</div>
-      <div class="muted"><span class="dot ${online(p)?'on':''}"></span>${online(p)?'Online now':'Last seen '+new Date(p.last_seen).toLocaleString()}</div>`
+      <div class="muted"><span class="dot ${online(p) ? 'on' : ''}"></span>${online(p) ? 'Online now' : 'Last seen ' + new Date(p.last_seen).toLocaleString()}</div>`
       : `<p class="muted">Waiting for your partner to create their account.</p>`}</div>
     <div class="card"><b>Your status</b>
       <div class="chips" style="margin-top:8px">${presets.map(x => `<button class="${x === mine.emoji + ' ' + mine.status ? '' : 'ghost'}" data-preset="${esc(x)}">${esc(x)}</button>`).join('')}
@@ -142,26 +210,40 @@ function render(){
         <div class="row" style="margin-top:6px"><button id="addok">Add and use</button><button class="ghost" id="canc">Cancel</button></div>
         <div id="aerr" class="muted"></div>` : ''}</div>`;
   if (tab === 'notes') body = `<div class="card">${notes.length ? notes.map(n =>
-      `<div class="note ${n.from_id===me?'me':''}">${esc(n.text)}</div>`).join('') : '<p class="muted">No notes yet. Send the first one.</p>'}
+      `<div class="note ${n.from_id === me ? 'me' : ''}">${esc(n.text)}</div>`).join('') : '<p class="muted">No notes yet. Send the first one.</p>'}
     <div class="row" style="margin-top:10px"><input id="nt" placeholder="Leave a note"><button id="send">Send note</button></div></div>`;
-  if (tab === 'settings') { const th = mine.theme || {}; body = `<div class="card">
+  if (tab === 'photos') body = `<div class="card"><div class="row" style="align-items:center"><button id="padd">+ Add photos</button>
+    <input id="pf" type="file" accept="image/*" multiple hidden><span id="pmsg" class="muted"></span></div>
+    ${photoErr ? `<p class="muted">Photos aren't set up yet. Run update2.sql in Supabase. (${esc(photoErr)})</p>` : ''}
+    ${photos.length ? `<div class="grid">${photos.map(x => `<div data-ph="${x.id}"><img loading="lazy" src="${urlCache[x.path] || ''}" alt=""></div>`).join('')}</div>`
+      : (photoErr ? '' : '<p class="muted">No photos yet. Add the first one.</p>')}</div>`;
+  if (tab === 'settings') {
+    const th = mine.theme || {}, g = th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
+    body = `<div class="card"><h3 style="margin-top:0">You</h3>
     <label>Your name<input id="nm" value="${esc(mine.name)}"></label>
-    <label>Accent color<input id="ac" type="color" value="${th.accent||'#e0457b'}"></label>
-    <label>Background color<input id="bgc" type="color" value="${th.bg||'#f2effa'}"></label>
+    <label>Accent color<input id="ac" type="color" value="${th.accent || '#e0457b'}"></label>
     <label>Font<select id="ft">${[['Rounded','ui-rounded, system-ui, sans-serif'],['Serif','Georgia, serif'],['Mono','ui-monospace, monospace'],['Handwritten','"Bradley Hand", "Comic Sans MS", cursive']]
-      .map(([n,v]) => `<option value="${esc(v)}" ${th.font===v?'selected':''}>${n}</option>`).join('')}</select></label>
-    <label>Status shortcuts (one per line)<textarea id="ps" rows="5">${esc(presets.join('\n'))}</textarea></label>
-    <button id="sv">Save settings</button>
-    <button class="ghost" id="nf">Enable notifications</button>
-    <button class="ghost" id="out">Sign out</button></div>`; }
-  app.innerHTML = nav + body;
+      .map(([n, v]) => `<option value="${esc(v)}" ${th.font === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+    <h3>Global settings</h3>
+    <label class="chk"><input type="checkbox" id="gon" ${g.on ? 'checked' : ''}>Use my custom background</label>
+    <label>Background type<select id="gt">${[['color','Color'],['image','Image'],['video','Looped video']]
+      .map(([v, n]) => `<option value="${v}" ${g.type === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+    <div id="gcolor" style="display:${g.type === 'color' ? 'block' : 'none'}"><label>Color<input id="bgc" type="color" value="${th.bg || '#f2effa'}"></label></div>
+    <div id="gfile" style="display:${g.type === 'color' ? 'none' : 'block'}"><button class="ghost" id="gup" style="margin-top:8px">${g.path ? 'Replace file' : 'Upload file'}</button>
+      <input id="gf" type="file" hidden accept="${g.type === 'video' ? 'video/*' : 'image/*'}"> <span id="gmsg" class="muted">${g.path ? 'File saved' : ''}</span></div>
+    <div class="row" style="margin-top:16px;flex-wrap:wrap"><button id="sv">Save settings</button>
+      <button class="ghost" id="nf">${notifOn() ? 'Disable notifications' : 'Enable notifications'}</button><button class="ghost" id="out">Sign out</button></div></div>`;
+  }
+  const vp = photos.find(x => x.id === viewing);
+  app.innerHTML = body + (vp ? `<div id="lb"><img src="${urlCache[vp.path] || ''}" alt=""><div class="row"><button class="ghost" id="lbx">Close</button>${vp.owner === me ? '<button id="lbd">Delete</button>' : ''}</div></div>` : '');
   Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
   if (keep[act] !== undefined) $('#' + act)?.focus();
-  app.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; render(); });
+  const on = (id, fn) => $(id) && ($(id).onclick = fn);
+  $('#nav').querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; viewing = null; render(); scrollTo(0, 0); });
+  on('#tgl', () => { collapsed = !collapsed; ls.set('nav', collapsed ? 'min' : 'max'); render(); });
   app.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
     const [e, ...rest] = b.dataset.preset.split(' ');
     save({emoji: e, status: rest.join(' ')}); });
-  const on = (id, fn) => $(id) && ($(id).onclick = fn);
   on('#addbtn', () => { adding = true; render(); $('#ne')?.focus(); });
   on('#canc', () => { adding = false; render(); });
   on('#addok', async () => {
@@ -180,13 +262,54 @@ function render(){
     if (!notes.some(x => x.id === data.id)) notes.push(data);
     render();
   });
-  on('#sv', async () => {
-    const list = $('#ps').value.split('\n').map(x => x.trim()).filter(Boolean), keys = list.map(emojiKey);
-    if (keys.some(k => !k)) { toast('Each status must start with an emoji.'); return; }
-    if (new Set(keys).size !== keys.length) { toast('Each emoji can only be used once.'); return; }
-    if (await save({name: $('#nm').value, theme: {accent: $('#ac').value, bg: $('#bgc').value, font: $('#ft').value, presets: list}})) toast('Settings saved');
+  on('#padd', () => $('#pf').click());
+  if ($('#pf')) $('#pf').onchange = async () => {
+    const files = [...$('#pf').files];
+    for (let i = 0; i < files.length; i++) {
+      $('#pmsg') && ($('#pmsg').textContent = `Uploading ${i + 1} of ${files.length}...`);
+      const path = await upload(files[i], 'photos'); if (!path) continue;
+      const { data, error } = await sb.from('photos').insert({path}).select().single();
+      if (error) { toast('Could not save photo: ' + error.message); continue; }
+      await signed([path]); if (!photos.some(x => x.id === data.id)) photos.unshift(data);
+    }
+    render();
+  };
+  app.querySelectorAll('[data-ph]').forEach(el => el.onclick = () => { viewing = +el.dataset.ph; render(); });
+  on('#lbx', () => { viewing = null; render(); });
+  on('#lbd', async () => {
+    const ph = photos.find(x => x.id === viewing); if (!ph || !confirm('Delete this photo?')) return;
+    const { error } = await sb.from('photos').delete().eq('id', ph.id);
+    if (error) { toast('Could not delete: ' + error.message); return; }
+    await sb.storage.from('media').remove([ph.path]);
+    photos = photos.filter(x => x.id !== ph.id); viewing = null; render();
   });
-  on('#nf', async () => toast((await Notification.requestPermission()) === 'granted' ? 'Notifications on' : 'Notifications blocked'));
+  on('#gup', () => $('#gf').click());
+  if ($('#gt')) $('#gt').onchange = () => {
+    const v = $('#gt').value;
+    $('#gcolor').style.display = v === 'color' ? 'block' : 'none';
+    $('#gfile').style.display = v === 'color' ? 'none' : 'block';
+    $('#gf').accept = v === 'video' ? 'video/*' : 'image/*';
+  };
+  if ($('#gf')) $('#gf').onchange = async () => {
+    const f = $('#gf').files[0]; if (!f) return;
+    $('#gmsg').textContent = 'Uploading...';
+    const path = await upload(f, 'bg'); if (!path) { $('#gmsg').textContent = 'Upload failed'; return; }
+    const th = mine.theme || {};
+    await save({theme: {...th, global: {...(th.global || {}), on: true, type: f.type.startsWith('video') ? 'video' : 'image', path}}});
+  };
+  on('#sv', async () => {
+    const th = mine.theme || {}, g = th.global || {};
+    if (await save({name: $('#nm').value, theme: {...th, accent: $('#ac').value, font: $('#ft').value, bg: $('#bgc').value,
+      global: {...g, on: $('#gon').checked, type: $('#gt').value}}})) toast('Settings saved');
+  });
+  on('#nf', async () => {
+    if (!('Notification' in window)) toast('Add the app to your Home Screen first, then try again.');
+    else if (notifOn()) { ls.set('notif', 'off'); toast('Notifications off on this device'); }
+    else if (Notification.permission === 'granted') { ls.set('notif', 'on'); toast('Notifications on'); }
+    else if ((await Notification.requestPermission()) === 'granted') { ls.set('notif', 'on'); toast('Notifications on'); }
+    else toast('Notifications blocked. Allow them in your device settings.');
+    render();
+  });
   on('#out', async () => { await sb.auth.signOut(); location.reload(); });
 }
 function showErr(e){

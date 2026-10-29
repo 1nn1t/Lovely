@@ -64,7 +64,7 @@ body.nonav #nav{display:none}
 
 @media(max-width:767px){
   #nav{
-    left:50%; bottom:calc(env(safe-area-inset-bottom) + 12px); translate:-50% 0; scale:var(--nav-scale,1); transform-origin:50% 100%;
+    left:50%; bottom:env(safe-area-inset-bottom); translate:-50% 0; scale:var(--nav-scale,1); transform-origin:50% 100%;
     padding:4px 8px 4px 8px; gap:0; border-radius:999px; width:auto;
     background:var(--glass-tint,rgba(255,255,255,.38));
     -webkit-backdrop-filter:blur(14px) saturate(200%) brightness(1.04); backdrop-filter:blur(14px) saturate(200%) brightness(1.04);
@@ -98,7 +98,7 @@ body.nonav #nav{display:none}
   #nav .ni.hot{color:var(--accent);opacity:1}
   #nav.is-dragging .ni.on:not(.hot){color:var(--ink);opacity:.65}
 
-  #nav .glass-indicator{display:block;position:absolute;z-index:1;left:0;top:auto;bottom:4px;height:40px;width:56px;
+  #nav .glass-indicator{display:block;position:fixed;z-index:1;left:0;top:auto;bottom:4px;height:40px;width:56px;
     border-radius:999px;pointer-events:none;will-change:transform;
     background:rgba(24,20,32,.28);
     border:0!important;outline:0!important;
@@ -109,6 +109,7 @@ body.nonav #nav{display:none}
     background:rgba(24,20,32,.34);
     border:0!important;outline:0!important;box-shadow:none!important;
     -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  #nav.liquid-glass-ready .glass-indicator{background:transparent!important}
 
   /* pill <-> drawer morph */
   #nav{justify-content:flex-end}
@@ -302,6 +303,7 @@ function initLiquidGlass(){
   if (isDesk() || document.body.classList.contains('nonav')) {
     liquidGlassInstance?.destroy();
     liquidGlassInstance = null;
+    $('#nav').classList.remove('liquid-glass-ready');
     return;
   }
   if (liquidGlassInstance || liquidGlassPromise) return liquidGlassPromise;
@@ -327,7 +329,15 @@ function initLiquidGlass(){
       interaction: 'fluid',
       interactionStrength: .12,
       interactionRadius: .4,
-      interactionViscosity: .8
+      interactionViscosity: .8,
+      on: {
+        init(){
+          $('#nav').classList.add('liquid-glass-ready');
+          document.querySelectorAll('canvas').forEach(canvas => {
+            canvas.style.setProperty('pointer-events', 'none', 'important');
+          });
+        }
+      }
     });
     liquidGlass.registerDynamic(navItems());
   }).catch(error => {
@@ -346,7 +356,7 @@ function syncMessageComposerPosition(){
   const nav = $('#nav');
   if (!nav || document.body.classList.contains('nonav')) return;
   const gap = 16;
-  document.documentElement.style.setProperty('--message-composer-bottom', `${nav.getBoundingClientRect().height + 12 + gap}px`);
+  document.documentElement.style.setProperty('--message-composer-bottom', `${nav.getBoundingClientRect().height + gap}px`);
 }
 
 function syncTabs(){

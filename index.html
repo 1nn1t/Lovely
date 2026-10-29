@@ -4,6 +4,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Lovely!</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/liquid-gl@3.0.0/liquidGL.js" crossorigin>
 <style>
 :root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif}
 *{box-sizing:border-box}
@@ -22,12 +24,30 @@ h3{margin:20px 0 4px;font-size:17px}label{display:block;margin-top:6px}
 .chk{display:flex;gap:8px;align-items:center}.chk input{width:auto;margin:0}
 button,input,textarea,select{font:inherit;color:inherit}
 input,textarea,select{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #8883;background:transparent;margin:2px 0}
+input[type=range]{padding:0;border:0;accent-color:var(--accent)}
 button{border:0;border-radius:999px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer}
 button.ghost{background:#8882;color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .row{display:flex;gap:8px}.row>input{flex:1}
-.note{padding:8px 12px;border-radius:16px;margin:6px 0;max-width:85%;background:#8882}
-.note.me{background:var(--accent);color:#fff;margin-left:auto}
+.messages{max-width:560px;height:calc(100dvh - 150px);min-height:340px;margin:0 auto;display:flex;flex-direction:column;padding:4px 0 80px;overflow:hidden}
+.messages-head{position:sticky;top:env(safe-area-inset-top);z-index:2;display:flex;flex-direction:column;align-items:center;padding:8px 0 16px}
+.messages-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;background:color-mix(in srgb,var(--accent) 16%,var(--card));border:2px solid color-mix(in srgb,var(--accent) 55%,white);box-shadow:0 6px 18px #0002}
+.messages-avatar-fallback{display:grid;place-items:center;font-size:28px}
+.messages-title{position:relative;margin-top:-10px;padding:6px 16px;border:1px solid #ffffff70;border-radius:999px;background:color-mix(in srgb,var(--card) 62%,transparent);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);box-shadow:0 5px 18px #00000014,inset 0 1px 0 #ffffff80;text-align:center;font-size:14px;font-weight:650;line-height:1.2}
+.messages-title.online{color:#fff;background:#34c759;border-color:#ffffff60;box-shadow:0 5px 18px #34c75935,inset 0 1px 0 #ffffff70}
+.messages-list{display:flex;flex-direction:column;gap:7px;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 2px 14px}
+.message{max-width:min(82%,380px);padding:9px 13px;border-radius:19px;background:color-mix(in srgb,var(--card) 78%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 2px 8px #0000000c;overflow-wrap:anywhere}
+.message.me{align-self:flex-end;color:white;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 82%,white),var(--accent));border-bottom-right-radius:7px}
+.message:not(.me){align-self:flex-start;border-bottom-left-radius:7px}
+.message-time{margin-top:4px;font-size:10px;opacity:.6;text-align:right}
+.message.me .message-time{color:#fff;opacity:.8}
+.messages-empty{margin:auto 0;text-align:center;padding:24px 18px;color:var(--ink);opacity:.58}
+.message-composer{position:fixed;z-index:4;left:50%;bottom:calc(env(safe-area-inset-bottom) + var(--message-composer-bottom,82px));translate:-50% 0;width:min(560px,calc(100% - 28px));display:flex;align-items:center;gap:8px;padding:7px 8px 7px 14px;border:1px solid #ffffff70;border-radius:999px;background:color-mix(in srgb,var(--card) 68%,transparent);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 8px 24px #00000018,inset 0 1px 0 #ffffff80}
+.message-composer input{min-width:0;margin:0;padding:7px 0;border:0;background:transparent;outline:none}
+.message-composer button{width:36px;height:36px;flex:none;display:grid;place-items:center;padding:0;background:var(--accent);box-shadow:0 2px 7px color-mix(in srgb,var(--accent) 35%,transparent)}
+.message-composer button svg{width:19px;height:19px}
+@media(min-width:768px){.messages{height:calc(100vh - 64px);min-height:400px;padding-bottom:72px}.message-composer{bottom:24px;left:calc(50% + 95px)}}
+@media(prefers-reduced-motion:reduce){.message-composer,.messages-title,.message{scroll-behavior:auto}}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--accent);color:#fff;max-width:90vw;box-shadow:0 4px 16px #0004;padding:10px 16px;border-radius:20px;display:none;z-index:30}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
 .grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block;cursor:pointer}
@@ -44,14 +64,14 @@ body.nonav #nav{display:none}
 
 @media(max-width:767px){
   #nav{
-    left:50%; bottom:calc(env(safe-area-inset-bottom) + 12px); translate:-50% 0; scale:1;
+    left:50%; bottom:calc(env(safe-area-inset-bottom) + 12px); translate:-50% 0; scale:var(--nav-scale,1); transform-origin:50% 100%;
     padding:4px 8px 4px 8px; gap:0; border-radius:999px; width:auto;
     background:var(--glass-tint,rgba(255,255,255,.38));
     -webkit-backdrop-filter:blur(14px) saturate(200%) brightness(1.04); backdrop-filter:blur(14px) saturate(200%) brightness(1.04);
     box-shadow:0 12px 32px #0000002e,0 2px 8px #00000014,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff33,inset 0 0 22px #ffffff26;
     will-change:transform, height, width;
   }
-  #nav.is-pressing{scale:1.02}
+  #nav.is-pressing{scale:calc(var(--nav-scale,1) * 1.02)}
   #nav .ni span{display:none}
   #nav .ni{padding:8px 16px}
 
@@ -103,7 +123,7 @@ body.nonav #nav{display:none}
     opacity:clamp(0, calc(var(--p,0) * 1.8 - .6), 1)}
   #account-drawer input{-webkit-user-select:text;user-select:text}
 
-  #nav.expanded{border-radius:24px;padding:12px 18px;width:min(90vw,320px)}
+  #nav.expanded{border-radius:24px;padding:12px 18px;width:min(calc(90vw * var(--nav-scale-inverse,1)),320px)}
   #nav.expanded #nav-row,#nav.expanded #nav-handle{display:none}
   #nav.expanded #account-drawer{position:static;translate:none;width:100%!important;
     pointer-events:auto;opacity:1}
@@ -190,6 +210,9 @@ async function applyTheme(){
   r.setProperty('--card', dark ? 'color-mix(in srgb, ' + bg + ' 85%, white)' : '#fff');
   r.setProperty('--glass-tint', dark ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.38)');
   r.setProperty('--font', th.font || 'ui-rounded,system-ui,sans-serif');
+  const navScale = Math.min(1.2, Math.max(.8, Number(th.navScale) || 1));
+  r.setProperty('--nav-scale', navScale);
+  r.setProperty('--nav-scale-inverse', 1 / navScale);
   setBg(media ? g : null);
 
   const paths = Object.values(people).map(p => p.avatar_url).filter(Boolean);
@@ -273,10 +296,57 @@ const isDesk = () => matchMedia('(min-width:768px)').matches;
 const navItems = () => [...$('#nav').querySelectorAll('[data-tab]')];
 const lg = {x:0, w:0, s:1, vx:0, vw:0, vs:0, tx:0, tw:0, lift:false, drag:false, raf:0, last:0, init:false};
 const LIFT = 1.16;
+let liquidGlassPromise = null, liquidGlass = null, liquidGlassInstance = null;
+
+function initLiquidGlass(){
+  if (isDesk() || document.body.classList.contains('nonav')) {
+    liquidGlassInstance?.destroy();
+    liquidGlassInstance = null;
+    return;
+  }
+  if (liquidGlassInstance || liquidGlassPromise) return liquidGlassPromise;
+  liquidGlassPromise = import('https://cdn.jsdelivr.net/npm/liquid-gl@3.0.0/liquidGL.js').then(module => {
+    liquidGlass = module.default;
+    if (isDesk() || !$('#lens')) return;
+    liquidGlassInstance = liquidGlass({
+      target: '#lens',
+      content: false,
+      zIndex: 6,
+      snapshot: 'body',
+      engine: 'webgl2',
+      resolution: .8,
+      refraction: .016,
+      aberration: .06,
+      bevelDepth: .035,
+      bevelWidth: .12,
+      frost: 0,
+      shadow: true,
+      specular: true,
+      reveal: 'none',
+      tilt: false,
+      interaction: 'fluid',
+      interactionStrength: .12,
+      interactionRadius: .4,
+      interactionViscosity: .8
+    });
+    liquidGlass.registerDynamic(navItems());
+  }).catch(error => {
+    console.warn('LiquidGL could not load; using the CSS glass fallback.', error);
+  }).finally(() => { liquidGlassPromise = null; });
+  return liquidGlassPromise;
+}
 
 function selectTab(t){
   if (expandedMenu) closeMenu();
   if (t !== tab) { tab = t; viewing = null; render(); scrollTo(0, 0); } else lgSync();
+}
+
+function syncMessageComposerPosition(){
+  if (matchMedia('(min-width:768px)').matches) return;
+  const nav = $('#nav');
+  if (!nav || document.body.classList.contains('nonav')) return;
+  const gap = 16;
+  document.documentElement.style.setProperty('--message-composer-bottom', `${nav.getBoundingClientRect().height + 12 + gap}px`);
 }
 
 function syncTabs(){
@@ -356,7 +426,8 @@ function measurePill(){
   return r;
 }
 function mnLayout(){
-  const d = $('#account-drawer'), w = Math.min(innerWidth * .9, 320);
+  const d = $('#account-drawer'), inverseScale = parseFloat(getComputedStyle($('#nav')).getPropertyValue('--nav-scale-inverse')) || 1;
+  const w = Math.min(innerWidth * .9 * inverseScale, 320);
   mn.pill = measurePill();
   d.style.width = (w - 36) + 'px';
   mn.big = {w, h: d.offsetHeight + 24};
@@ -451,7 +522,7 @@ function initNav(){
   const local = e => { const r = nav.getBoundingClientRect(); return (e.clientX - r.left) / (r.width / nav.offsetWidth); };
   const near = cx => navItems().reduce((a, b) => Math.abs(bx(b) + b.offsetWidth / 2 - cx) < Math.abs(bx(a) + a.offsetWidth / 2 - cx) ? b : a);
   const hot = b => navItems().forEach(x => x.classList.toggle('hot', x === b));
-  const travel = () => Math.max(80, mn.big.h - mn.pill.h);
+  const travel = () => Math.max(80, mn.big.h - mn.pill.h) * (parseFloat(getComputedStyle(nav).getPropertyValue('--nav-scale')) || 1);
 
   nav.addEventListener('pointerdown', e => {
     if (isDesk() || !e.isPrimary || pid !== null || expandedMenu || mn.raf) return;  // taps inside the open drawer are left alone
@@ -518,7 +589,10 @@ function initNav(){
     if (!isDesk() && e.detail > 0) return;
     selectTab(b.dataset.tab);
   });
-  new ResizeObserver(() => lgSync(true)).observe(nav);
+  new ResizeObserver(() => { lgSync(true); syncMessageComposerPosition(); }).observe(nav);
+  addEventListener('resize', syncMessageComposerPosition);
+  matchMedia('(max-width:767px)').addEventListener('change', initLiquidGlass);
+  syncMessageComposerPosition();
 }
 
 function render(){
@@ -549,9 +623,26 @@ function render(){
       ${adding ? `<div class="row"><input id="ne" style="max-width:64px" placeholder="😀" aria-label="Emoji"><input id="nx" placeholder="Status name" aria-label="Status name"></div>
         <div class="row" style="margin-top:6px"><button id="addok">Add and use</button><button class="ghost" id="canc">Cancel</button></div>
         <div id="aerr" class="muted"></div>` : ''}</div>`;
-  if (tab === 'notes') body = `<div class="card">${notes.length ? notes.map(n =>
-      `<div class="note ${n.from_id === me ? 'me' : ''}">${esc(n.text)}</div>`).join('') : '<p class="muted">No notes yet. Send the first one.</p>'}
-    <div class="row" style="margin-top:10px"><input id="nt" placeholder="Leave a note"><button id="send">Send note</button></div></div>`;
+  if (tab === 'notes') {
+    const correspondent = partner(), name = correspondent?.name || 'Your partner';
+    const avatar = correspondent?.avatar_url ? urlCache[correspondent.avatar_url] : '';
+    body = `<section class="messages" aria-label="Messages">
+      <header class="messages-head">
+        ${avatar ? `<img class="messages-avatar" src="${esc(avatar)}" alt="${esc(name)}">` : '<div class="messages-avatar messages-avatar-fallback" aria-hidden="true">👤</div>'}
+        <div class="messages-title ${online(correspondent) ? 'online' : ''}">${esc(name)}</div>
+      </header>
+      <div class="messages-list" id="note-list" aria-live="polite">
+        ${notes.length ? notes.map(n => `<article class="message ${n.from_id === me ? 'me' : ''}">
+          <div>${esc(n.text)}</div>
+          ${n.created_at ? `<div class="message-time">${esc(new Date(n.created_at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}))}</div>` : ''}
+        </article>`).join('') : '<p class="messages-empty">This is the beginning of your conversation.<br>Send a little note to say hello.</p>'}
+      </div>
+    </section>
+    <div class="message-composer">
+      <input id="nt" placeholder="Message" aria-label="Write a message" autocomplete="off">
+      <button id="send" aria-label="Send message" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+    </div>`;
+  }
   if (tab === 'photos') body = `<div class="card"><div class="row" style="align-items:center"><button id="padd">+ Add photos</button>
     <input id="pf" type="file" accept="image/*" multiple hidden><span id="pmsg" class="muted"></span></div>
     ${photoErr ? `<p class="muted">Photos aren't set up yet. Run update2.sql in Supabase. (${esc(photoErr)})</p>` : ''}
@@ -559,10 +650,12 @@ function render(){
       : (photoErr ? '' : '<p class="muted">No photos yet. Add the first one.</p>')}</div>`;
   if (tab === 'settings') {
     const th = mine.theme || {}, g = th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
+    const navScale = Math.round(Math.min(1.2, Math.max(.8, Number(th.navScale) || 1)) * 100);
     body = `<div class="card"><h3 style="margin-top:0">You</h3>
     <label>Accent color<input id="ac" type="color" value="${th.accent || '#e0457b'}"></label>
     <label>Font<select id="ft">${[['Rounded','ui-rounded, system-ui, sans-serif'],['Serif','Georgia, serif'],['Mono','ui-monospace, monospace'],['Handwritten','"Bradley Hand", "Comic Sans MS", cursive']]
       .map(([n, v]) => `<option value="${esc(v)}" ${th.font === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+    <label>Mobile menu bar size <span id="navScaleValue" class="muted">${navScale}%</span><input id="navScale" type="range" min="80" max="120" step="1" value="${navScale}" aria-label="Mobile menu bar size"></label>
     <h3>Global settings</h3>
     <label class="chk"><input type="checkbox" id="gon" ${g.on ? 'checked' : ''}>Use my custom background</label>
     <label>Background type<select id="gt">${[['color','Color'],['image','Image'],['video','Looped video']]
@@ -579,7 +672,16 @@ function render(){
   Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
   if (keep[act] !== undefined) $('#' + act)?.focus();
   const on = (id, fn) => $(id) && ($(id).onclick = fn);
-  requestAnimationFrame(() => lgSync());
+  if ($('#navScale')) $('#navScale').oninput = e => {
+    const value = Number(e.target.value);
+    const scale = value / 100;
+    document.documentElement.style.setProperty('--nav-scale', String(scale));
+    document.documentElement.style.setProperty('--nav-scale-inverse', String(1 / scale));
+    $('#navScaleValue').textContent = value + '%';
+    syncMessageComposerPosition();
+  };
+  requestAnimationFrame(() => { lgSync(); initLiquidGlass(); });
+  if (tab === 'notes') requestAnimationFrame(() => { const list = $('#note-list'); if (list) list.scrollTop = list.scrollHeight; });
   on('#tgl', () => { collapsed = !collapsed; ls.set('nav', collapsed ? 'min' : 'max'); render(); });
 
   app.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
@@ -641,6 +743,7 @@ function render(){
   on('#sv', async () => {
     const th = mine.theme || {}, g = th.global || {};
     if (await save({theme: {...th, accent: $('#ac').value, font: $('#ft').value, bg: $('#bgc').value,
+      navScale: Number($('#navScale').value) / 100,
       global: {...g, on: $('#gon').checked, type: $('#gt').value}}})) toast('Settings saved');
   });
   on('#nf', async () => {

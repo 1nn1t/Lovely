@@ -40,11 +40,11 @@ const partner = () => Object.values(people).find(p => p.id !== me);
 const online = p => p && Date.now() - new Date(p.last_seen) < 75000;
 const defPresets = ["💼 Working","😴 Sleeping","🍽️ Eating","🚗 Commuting","🎮 Playing"];
 
-function toast(msg){
+function toast(msg, sys){
   const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
   clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', 4000);
-  if ('Notification' in window && Notification.permission === 'granted' && document.hidden)
-    navigator.serviceWorker?.ready.then(r => r.showNotification('Us', {body: msg}));
+  if (sys && 'Notification' in window && Notification.permission === 'granted' && document.hidden)
+    navigator.serviceWorker?.ready.then(r => r.showNotification(sys.title, {body: sys.body}));
 }
 function applyTheme(){
   const th = people[me]?.theme || {}, r = document.documentElement.style;
@@ -82,7 +82,7 @@ async function boot(){
     .on('postgres_changes', {event:'*', schema:'public', table:'profiles'}, ({new: p}) => {
       const old = people[p.id]; people[p.id] = p;
       if (p.id !== me && old && (old.status !== p.status || old.emoji !== p.emoji))
-        toast(`${p.name} updated their Status to: ${p.emoji} ${p.status}`);
+        toast(`${p.name} updated their Status to: ${p.emoji} ${p.status}`, {title: p.name, body: `updated their Status to: ${p.emoji} ${p.status}`});
       if (p.id === me) applyTheme();
       const same = old && old.status === p.status && old.emoji === p.emoji && old.name === p.name && JSON.stringify(old.theme) === JSON.stringify(p.theme);
       if (!(same && /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))) render();
@@ -90,7 +90,7 @@ async function boot(){
     .on('postgres_changes', {event:'INSERT', schema:'public', table:'notes'}, ({new: n}) => {
       if (notes.some(x => x.id === n.id)) return;
       notes.push(n);
-      if (n.from_id !== me) toast(`${people[n.from_id]?.name || 'Your partner'} sent you a Note!`);
+      if (n.from_id !== me) { const nm = people[n.from_id]?.name || 'Your partner'; toast(`${nm} sent you a Note!`, {title: nm, body: 'sent you a Note!'}); }
       render();
     }).subscribe();
   heartbeat(); setInterval(heartbeat, 30000);
@@ -196,196 +196,5 @@ function showErr(e){
 addEventListener('unhandledrejection', ev => showErr(ev.reason));
 addEventListener('error', ev => showErr(ev.error || ev.message));
 applyTheme();
-boot().catch(showErr);
-</script></body></html><!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.json">
-<title>Us</title>
-<style>
-:root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif}
-@media(prefers-color-scheme:dark){:root{--ink:#f1eefb;--card:#2a2540}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
-main{max-width:480px;margin:0 auto;padding:16px 0 40px}
-.card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px}
-.hero{text-align:center;padding:28px 16px}
-.hero .emoji{font-size:56px}.hero h2{margin:6px 0 2px;font-size:26px}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#aaa;margin-right:6px}
-.dot.on{background:#2fbf71}
-.muted{opacity:.6;font-size:14px}
-button,input,textarea,select{font:inherit;color:inherit}
-input,textarea,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid #8883;background:transparent;margin:4px 0}
-button{border:0;border-radius:999px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer}
-button.ghost{background:#8882;color:var(--ink)}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.row{display:flex;gap:8px}.row>input{flex:1}
-.note{padding:8px 12px;border-radius:16px;margin:6px 0;max-width:85%;background:#8882}
-.note.me{background:var(--accent);color:#fff;margin-left:auto}
-#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;display:none;z-index:9}
-.tabs{display:flex;gap:8px;margin-bottom:14px}
-</style></head>
-<body><div id="toast"></div><main id="app"></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
-<script>
-// 1) Paste your Supabase project values (Project Settings -> API)
-const SUPABASE_URL = 'https://vffhgnflcrlddodldprn.supabase.co', SUPABASE_KEY = 'sb_publishable_ucjyfX7n8IKT5TtUyGZVUw_VKeqjj3L';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const $ = s => document.querySelector(s), app = $('#app');
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let me, people = {}, notes = [], tab = 'home';
-const partner = () => Object.values(people).find(p => p.id !== me);
-const online = p => p && Date.now() - new Date(p.last_seen) < 75000;
-const defPresets = ["💼 Working","😴 Sleeping","🍽️ Eating","🚗 Commuting","🎮 Playing"];
-
-function toast(msg){
-  const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
-  clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', 4000);
-  if ('Notification' in window && Notification.permission === 'granted' && document.hidden)
-    navigator.serviceWorker?.ready.then(r => r.showNotification('Us', {body: msg}));
-}
-function applyTheme(){
-  const th = people[me]?.theme || {}, r = document.documentElement.style;
-  r.setProperty('--accent', th.accent || '#e0457b');
-  r.setProperty('--bg', th.bg || '#f2effa');
-  r.setProperty('--font', th.font || 'ui-rounded,system-ui,sans-serif');
-}
-
-async function boot(){
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) return login();
-  me = session.user.id;
-  let { data: ps, error: pe } = await sb.from('profiles').select('*');
-  if (pe) throw pe;
-  if (!ps.some(p => p.id === me)) {
-    const { error: ie } = await sb.from('profiles').insert({id: me});
-    if (ie) throw new Error('Your account has no profile row. Run fix.sql in Supabase. (' + ie.message + ')');
-    ({ data: ps, error: pe } = await sb.from('profiles').select('*'));
-    if (pe) throw pe;
-  }
-  ps.forEach(p => people[p.id] = p);
-  const { data: ns, error: ne } = await sb.from('notes').select('*').order('created_at').limit(100);
-  if (ne) throw ne;
-  notes = ns;
-  sb.channel('us')
-    .on('postgres_changes', {event:'*', schema:'public', table:'profiles'}, ({new: p}) => {
-      const old = people[p.id]; people[p.id] = p;
-      if (p.id !== me && old && (old.status !== p.status || old.emoji !== p.emoji))
-        toast(`${p.name} updated their Status to: ${p.emoji} ${p.status}`);
-      if (p.id === me) applyTheme();
-      const same = old && old.status === p.status && old.emoji === p.emoji && old.name === p.name && JSON.stringify(old.theme) === JSON.stringify(p.theme);
-      if (!(same && /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))) render();
-    })
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'notes'}, ({new: n}) => {
-      if (notes.some(x => x.id === n.id)) return;
-      notes.push(n);
-      if (n.from_id !== me) toast(`${people[n.from_id]?.name || 'Your partner'} sent you a Note!`);
-      render();
-    }).subscribe();
-  heartbeat(); setInterval(heartbeat, 30000);
-  document.addEventListener('visibilitychange', heartbeat);
-  applyTheme(); render();
-}
-async function heartbeat(){
-  if (document.hidden || !me) return;
-  const t = new Date().toISOString();
-  people[me].last_seen = t;
-  await sb.from('profiles').update({last_seen: t}).eq('id', me);
-}
-function login(){
-  app.innerHTML = `<div class="card"><h2>Us</h2>
-    <input id="em" type="email" placeholder="Email" autocomplete="username">
-    <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
-    <button id="go">Sign in</button> <span id="err" class="muted"></span></div>`;
-  $('#go').onclick = async () => {
-    $('#err').textContent = 'Signing in...';
-    const { error } = await sb.auth.signInWithPassword({email: $('#em').value, password: $('#pw').value});
-    if (error) $('#err').textContent = error.message; else boot().catch(showErr);
-  };
-}
-const seg = s => [...new Intl.Segmenter(undefined, {granularity: 'grapheme'}).segment((s || '').trim())].map(x => x.segment);
-const isEmoji = g => /\p{Extended_Pictographic}/u.test(g);
-const emojiKey = s => { const g = seg(s)[0] || ''; return isEmoji(g) ? g.replace(/\uFE0F/g, '') : ''; };
-let adding = false;
-async function save(patch){
-  const { error } = await sb.from('profiles').update(patch).eq('id', me);
-  if (error) { toast('Could not save: ' + error.message); return false; }
-  Object.assign(people[me], patch); applyTheme(); render(); return true;
-}
-function render(){
-  const act = document.activeElement?.id, keep = {};
-  ['nt','ne','nx'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
-  const p = partner(), mine = people[me], presets = mine.theme?.presets || defPresets;
-  const nav = `<div class="tabs">${['home','notes','settings'].map(t =>
-    `<button class="${tab===t?'':'ghost'}" data-tab="${t}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</div>`;
-  let body = '';
-  if (tab === 'home') body = `
-    <div class="card hero">${p ? `<div class="emoji">${esc(p.emoji)}</div><h2>${esc(p.name)}</h2>
-      <div>${esc(p.status)}</div>
-      <div class="muted"><span class="dot ${online(p)?'on':''}"></span>${online(p)?'Online now':'Last seen '+new Date(p.last_seen).toLocaleString()}</div>`
-      : `<p class="muted">Waiting for your partner to create their account.</p>`}</div>
-    <div class="card"><b>Your status</b>
-      <div class="chips" style="margin-top:8px">${presets.map(x => `<button class="${x === mine.emoji + ' ' + mine.status ? '' : 'ghost'}" data-preset="${esc(x)}">${esc(x)}</button>`).join('')}
-        ${adding ? '' : '<button class="ghost" id="addbtn">+ Add status</button>'}</div>
-      ${adding ? `<div class="row"><input id="ne" style="max-width:64px" placeholder="😀" aria-label="Emoji"><input id="nx" placeholder="Status name" aria-label="Status name"></div>
-        <div class="row" style="margin-top:6px"><button id="addok">Add and use</button><button class="ghost" id="canc">Cancel</button></div>
-        <div id="aerr" class="muted"></div>` : ''}</div>`;
-  if (tab === 'notes') body = `<div class="card">${notes.length ? notes.map(n =>
-      `<div class="note ${n.from_id===me?'me':''}">${esc(n.text)}</div>`).join('') : '<p class="muted">No notes yet. Send the first one.</p>'}
-    <div class="row" style="margin-top:10px"><input id="nt" placeholder="Leave a note"><button id="send">Send note</button></div></div>`;
-  if (tab === 'settings') { const th = mine.theme || {}; body = `<div class="card">
-    <label>Your name<input id="nm" value="${esc(mine.name)}"></label>
-    <label>Accent color<input id="ac" type="color" value="${th.accent||'#e0457b'}"></label>
-    <label>Background color<input id="bgc" type="color" value="${th.bg||'#f2effa'}"></label>
-    <label>Font<select id="ft">${[['Rounded','ui-rounded, system-ui, sans-serif'],['Serif','Georgia, serif'],['Mono','ui-monospace, monospace'],['Handwritten','"Bradley Hand", "Comic Sans MS", cursive']]
-      .map(([n,v]) => `<option value="${esc(v)}" ${th.font===v?'selected':''}>${n}</option>`).join('')}</select></label>
-    <label>Status shortcuts (one per line)<textarea id="ps" rows="5">${esc(presets.join('\n'))}</textarea></label>
-    <button id="sv">Save settings</button>
-    <button class="ghost" id="nf">Enable notifications</button>
-    <button class="ghost" id="out">Sign out</button></div>`; }
-  app.innerHTML = nav + body;
-  Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
-  if (keep[act] !== undefined) $('#' + act)?.focus();
-  app.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; render(); });
-  app.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
-    const [e, ...rest] = b.dataset.preset.split(' ');
-    save({emoji: e, status: rest.join(' ')}); });
-  const on = (id, fn) => $(id) && ($(id).onclick = fn);
-  on('#addbtn', () => { adding = true; render(); $('#ne')?.focus(); });
-  on('#canc', () => { adding = false; render(); });
-  on('#addok', async () => {
-    const g = seg($('#ne').value), em = g.length === 1 && isEmoji(g[0]) ? g[0] : '', tx = $('#nx').value.trim(), err = $('#aerr');
-    if (!em) { err.textContent = 'Enter exactly one emoji.'; return; }
-    if (!tx) { err.textContent = 'Enter a name for the status.'; return; }
-    if (presets.some(x => emojiKey(x) === emojiKey(em))) { err.textContent = em + ' is already used. Pick a different emoji.'; return; }
-    adding = false;
-    await save({emoji: em, status: tx, theme: {...(mine.theme || {}), presets: [...presets, em + ' ' + tx]}});
-  });
-  on('#send', async () => {
-    const t = $('#nt').value.trim(); if (!t) return;
-    const { data, error } = await sb.from('notes').insert({text: t}).select().single();
-    if (error) { toast('Could not send: ' + error.message); return; }
-    $('#nt').value = '';
-    if (!notes.some(x => x.id === data.id)) notes.push(data);
-    render();
-  });
-  on('#sv', async () => {
-    const list = $('#ps').value.split('\n').map(x => x.trim()).filter(Boolean), keys = list.map(emojiKey);
-    if (keys.some(k => !k)) { toast('Each status must start with an emoji.'); return; }
-    if (new Set(keys).size !== keys.length) { toast('Each emoji can only be used once.'); return; }
-    if (await save({name: $('#nm').value, theme: {accent: $('#ac').value, bg: $('#bgc').value, font: $('#ft').value, presets: list}})) toast('Settings saved');
-  });
-  on('#nf', async () => toast((await Notification.requestPermission()) === 'granted' ? 'Notifications on' : 'Notifications blocked'));
-  on('#out', async () => { await sb.auth.signOut(); location.reload(); });
-}
-function showErr(e){
-  app.innerHTML = `<div class="card"><b>Something went wrong</b><p>${esc(e && (e.message || e.reason || e))}</p><button id="retry">Back to sign in</button></div>`;
-  $('#retry').onclick = async () => { await sb.auth.signOut(); location.reload(); };
-}
-addEventListener('unhandledrejection', ev => showErr(ev.reason));
-addEventListener('error', ev => showErr(ev.error || ev.message));
 boot().catch(showErr);
 </script></body></html>

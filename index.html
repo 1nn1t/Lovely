@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/liquid-gl@3.0.0/liquidGL.js" crossorigin>
 <style>
-:root{--accent:#e0457b;--bg:#f2effa;--ink:#241f33;--card:#fff;--font:ui-rounded,system-ui,sans-serif}
+:root{--accent:#e0457b;--bg:#17131f;--ink:#f1eefb;--card:color-mix(in srgb,#17131f 85%,white);--glass-tint:rgba(255,255,255,.1);--font:ui-rounded,system-ui,sans-serif;--ease:cubic-bezier(.2,.75,.25,1);--spring:cubic-bezier(.3,1.5,.5,1)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 var(--font);padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom);transition:padding-left .2s}
 main{max-width:480px;margin:0 auto;padding:16px 0 120px}
@@ -15,7 +15,7 @@ main{max-width:480px;margin:0 auto;padding:16px 0 120px}
 #bg img,#bg video{width:100%;height:100%;object-fit:cover}
 .card{background:var(--card);border-radius:20px;padding:16px;margin-bottom:14px}
 body.media .card{background:color-mix(in srgb,var(--card) 75%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-.hero{text-align:center;padding:28px 16px}.hero .emoji{font-size:56px}.hero h2{margin:6px 0 2px;font-size:26px}
+.hero{text-align:center;padding:28px 16px}.hero h2{margin:6px 0 2px;font-size:26px}
 .hero-name-row{display:flex;align-items:center;justify-content:center;gap:10px}
 .hero-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#aaa;margin-right:6px}.dot.on{background:#2fbf71}
@@ -23,136 +23,167 @@ body.media .card{background:color-mix(in srgb,var(--card) 75%,transparent);-webk
 h3{margin:20px 0 4px;font-size:17px}label{display:block;margin-top:6px}
 .chk{display:flex;gap:8px;align-items:center}.chk input{width:auto;margin:0}
 button,input,textarea,select{font:inherit;color:inherit}
-input,textarea,select{width:100%;padding:8px 10px;border-radius:10px;border:1px solid #8883;background:transparent;margin:2px 0}
-input[type=range]{padding:0;border:0;accent-color:var(--accent)}
-button{border:0;border-radius:999px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer}
-button.ghost{background:#8882;color:var(--ink)}
+input,textarea,select{width:100%;padding:8px 10px;border-radius:12px;border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);background:color-mix(in srgb,var(--ink) 6%,transparent);margin:2px 0}
+input[type=range]{padding:0;border:0;background:none;accent-color:var(--accent)}
+button{position:relative;border:0;border-radius:999px;padding:8px 14px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 86%,white),var(--accent));color:#fff;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff59,0 4px 14px color-mix(in srgb,var(--accent) 32%,transparent);transition:transform .45s var(--spring),filter .2s}
+button:not(.ni,.tgl):active{transform:scale(.93);filter:brightness(1.08)}
+button.ghost{color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .row{display:flex;gap:8px}.row>input{flex:1}
+.ico{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--accent);color:#fff;max-width:90vw;box-shadow:0 4px 16px #0004;padding:10px 16px;border-radius:20px;display:none;z-index:30}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block;cursor:pointer}
+#lb{position:fixed;inset:0;z-index:20;background:#0008;-webkit-backdrop-filter:blur(28px) saturate(160%);backdrop-filter:blur(28px) saturate(160%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
+#lb img{max-width:100%;max-height:80vh;border-radius:12px}
+
+/* messages */
 .messages{max-width:560px;height:calc(100dvh - 150px);min-height:340px;margin:0 auto;display:flex;flex-direction:column;padding:4px 0 80px;overflow:hidden}
 .messages-head{position:sticky;top:env(safe-area-inset-top);z-index:2;display:flex;flex-direction:column;align-items:center;padding:8px 0 16px}
 .messages-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;background:color-mix(in srgb,var(--accent) 16%,var(--card));border:2px solid color-mix(in srgb,var(--accent) 55%,white);box-shadow:0 6px 18px #0002}
 .messages-avatar-fallback{display:grid;place-items:center;font-size:28px}
-.messages-title{position:relative;margin-top:-10px;padding:6px 16px;border:1px solid #ffffff70;border-radius:999px;background:color-mix(in srgb,var(--card) 62%,transparent);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);box-shadow:0 5px 18px #00000014,inset 0 1px 0 #ffffff80;text-align:center;font-size:14px;font-weight:650;line-height:1.2}
+.messages-title,.message-composer{border:1px solid #ffffff70;border-radius:999px;-webkit-backdrop-filter:blur(var(--b,16px)) saturate(160%);backdrop-filter:blur(var(--b,16px)) saturate(160%)}
+.messages-title{position:relative;margin-top:-10px;padding:6px 16px;background:color-mix(in srgb,var(--card) 62%,transparent);box-shadow:0 5px 18px #00000014,inset 0 1px 0 #ffffff80;text-align:center;font-size:14px;font-weight:650;line-height:1.2}
 .messages-title.online{color:#fff;background:#34c759;border-color:#ffffff60;box-shadow:0 5px 18px #34c75935,inset 0 1px 0 #ffffff70}
 .messages-list{display:flex;flex-direction:column;gap:7px;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 2px 14px}
 .message{max-width:min(82%,380px);padding:9px 13px;border-radius:19px;background:color-mix(in srgb,var(--card) 78%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 2px 8px #0000000c;overflow-wrap:anywhere}
-.message.me{align-self:flex-end;color:white;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 82%,white),var(--accent));border-bottom-right-radius:7px}
+.message.me{align-self:flex-end;color:#fff;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 82%,white),var(--accent));border-bottom-right-radius:7px}
 .message:not(.me){align-self:flex-start;border-bottom-left-radius:7px}
 .message-time{margin-top:4px;font-size:10px;opacity:.6;text-align:right}
 .message.me .message-time{color:#fff;opacity:.8}
-.messages-empty{margin:auto 0;text-align:center;padding:24px 18px;color:var(--ink);opacity:.58}
-.message-composer{position:fixed;z-index:4;left:50%;bottom:calc(env(safe-area-inset-bottom) + var(--message-composer-bottom,82px));translate:-50% 0;width:min(560px,calc(100% - 28px));display:flex;align-items:center;gap:8px;padding:7px 8px 7px 14px;border:1px solid #ffffff70;border-radius:999px;background:color-mix(in srgb,var(--card) 68%,transparent);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);box-shadow:0 8px 24px #00000018,inset 0 1px 0 #ffffff80}
+.messages-empty{margin:auto 0;text-align:center;padding:24px 18px;opacity:.58}
+.message-composer{--b:18px;position:fixed;z-index:4;left:50%;bottom:calc(env(safe-area-inset-bottom) + var(--message-composer-bottom,82px));translate:-50% 0;width:min(560px,calc(100% - 28px));display:flex;align-items:center;gap:8px;padding:7px 8px 7px 14px;background:color-mix(in srgb,var(--card) 68%,transparent);box-shadow:0 8px 24px #00000018,inset 0 1px 0 #ffffff80}
 .message-composer input{min-width:0;margin:0;padding:7px 0;border:0;background:transparent;outline:none}
-.message-composer button{width:36px;height:36px;flex:none;display:grid;place-items:center;padding:0;background:var(--accent);box-shadow:0 2px 7px color-mix(in srgb,var(--accent) 35%,transparent)}
-.message-composer button svg{width:19px;height:19px}
-@media(min-width:768px){.messages{height:calc(100vh - 64px);min-height:400px;padding-bottom:72px}.message-composer{bottom:24px;left:calc(50% + 95px)}}
-@media(prefers-reduced-motion:reduce){.message-composer,.messages-title,.message{scroll-behavior:auto}}
-#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);background:var(--accent);color:#fff;max-width:90vw;box-shadow:0 4px 16px #0004;padding:10px 16px;border-radius:20px;display:none;z-index:30}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
-.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block;cursor:pointer}
-#lb{position:fixed;inset:0;z-index:20;background:#000e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
-#lb img{max-width:100%;max-height:80vh;border-radius:12px}
+.message-composer button{width:36px;height:36px;flex:none;display:grid;place-items:center;padding:0;box-shadow:0 2px 7px color-mix(in srgb,var(--accent) 35%,transparent)}
+.message-composer .ico{width:19px;height:19px;stroke-width:2.2}
+
+/* ===== liquid glass system: CSS tier everywhere, plus a WebGL lens on .gl pills ===== */
+:root{--rim:linear-gradient(135deg,#fffffff0,#ffffff14 30%,#ffffff0a 62%,#ffffffd0);--glass-bg:color-mix(in srgb,var(--card) 58%,transparent)}
+#bg{background:radial-gradient(55% 38% at 12% 6%,color-mix(in srgb,var(--accent) 42%,transparent),transparent 72%),radial-gradient(60% 42% at 92% 78%,color-mix(in srgb,#6f7dff 32%,transparent),transparent 72%),radial-gradient(50% 36% at 30% 100%,color-mix(in srgb,#ffb36b 22%,transparent),transparent 72%)}
+body.media #bg{background:none}
+.card,button.ghost,.messages-title,.message-composer,.message:not(.me){background:var(--glass-bg);-webkit-backdrop-filter:blur(20px) saturate(190%) brightness(1.05);backdrop-filter:blur(20px) saturate(190%) brightness(1.05);border:1px solid #ffffff38;box-shadow:0 10px 30px #00000024,0 1px 4px #0000000f,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff2e,inset 0 0 20px #ffffff14}
+.card,.message{position:relative}
+.card::before,button.ghost::before,.messages-title::before,.message-composer::before,.message:not(.me)::before,#toast::before,button:not(.ni,.tgl,.ghost)::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--rim);opacity:.8;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.message.me{box-shadow:inset 0 1px 0 #ffffff66,0 4px 14px color-mix(in srgb,var(--accent) 30%,transparent)}
+.ni,.tgl{box-shadow:none}
+/* interactive glass: a light follows the finger */
+button:not(.ni,.tgl)::after,.message-composer::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(90px circle at var(--gx,50%) var(--gy,50%),#ffffff59,transparent 70%)}
+button:not(.ni,.tgl).pressed::after,.message-composer.pressed::after{opacity:1}
+#toast{background:color-mix(in srgb,var(--accent) 72%,transparent);-webkit-backdrop-filter:blur(20px) saturate(190%);backdrop-filter:blur(20px) saturate(190%);border:1px solid #ffffff4d;box-shadow:0 10px 30px #0003,inset 0 1px 0 #ffffff80;animation:toastIn .6s var(--spring)}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-24px) scale(.9)}}
+/* elements with a WebGL lens (see initViewGlass) */
+.gl{opacity:1!important}
+.gl>*{position:relative;z-index:2}
+.gl.liquid-glass-ready{pointer-events:auto!important;transition:none!important;background:transparent!important;-webkit-backdrop-filter:saturate(150%)!important;backdrop-filter:saturate(150%)!important}
+.messages-title.online.liquid-glass-ready{background:color-mix(in srgb,#34c759 58%,transparent)!important}
+@media(prefers-reduced-motion:reduce){button{transition:none!important}#toast{animation:none}}
+@media(prefers-reduced-transparency:reduce){.card,button.ghost,.messages-title:not(.online),.message-composer,.message:not(.me),#lb{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--card)!important}#bg{background:none}}
 
 /* navigation */
 #nav{position:fixed;z-index:5;display:flex;flex-direction:column;align-items:center;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .ni{background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:8px 16px;border-radius:999px;opacity:.65}
-.ni.on{opacity:1;background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
-.ni img.nav-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.ni.on{opacity:1;color:var(--accent)}
+.ni .ico{width:24px;height:24px}
 .tgl,.glass-indicator{display:none}
 body.nonav #nav{display:none}
 
 @media(max-width:767px){
-  #nav{
-    left:50%; bottom:env(safe-area-inset-bottom); translate:-50% 0; scale:var(--nav-scale,1); transform-origin:50% 100%;
-    padding:4px 8px 4px 8px; gap:0; border-radius:999px; width:auto;
-    background:var(--glass-tint,rgba(255,255,255,.38));
-    -webkit-backdrop-filter:blur(14px) saturate(200%) brightness(1.04); backdrop-filter:blur(14px) saturate(200%) brightness(1.04);
+  /* Find My metrics (measured from the recording, in pt): bar 336x78, radius ~39, tabs 70 wide, selection pill 84x49, expanded sheet 364 wide, radius 38, inner bar inset 14 */
+  #nav{left:50%;bottom:calc(env(safe-area-inset-bottom) + 8px);translate:-50% 0;transform-origin:50% 100%;
+    scale:calc(var(--nav-scale,1) * var(--nav-motion-x,1)) calc(var(--nav-scale,1) * var(--nav-motion-y,1));
+    justify-content:flex-end;width:min(336px,calc((100vw - 16px) / var(--nav-scale,1)));padding:0;border:1px solid #ffffff40;border-radius:39px;overflow:hidden;
+    background:var(--glass-tint);-webkit-backdrop-filter:blur(calc(14px + var(--p,0) * 6px)) saturate(200%) brightness(1.04);backdrop-filter:blur(calc(14px + var(--p,0) * 6px)) saturate(200%) brightness(1.04);
     box-shadow:0 12px 32px #0000002e,0 2px 8px #00000014,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff33,inset 0 0 22px #ffffff26;
-    will-change:transform, height, width;
-  }
-  #nav.is-pressing{scale:calc(var(--nav-scale,1) * 1.02)}
-  #nav .ni span{display:none}
-  #nav .ni{padding:8px 16px}
-
-  /* Small subtle notch indicator directly inside the pill bar */
-  #nav-handle{
-    width:24px; height:3px; border-radius:999px; background:var(--ink); opacity:.25; margin-bottom:2px; cursor:pointer; flex-shrink:0; align-self:center;
-  }
-
-  /* specular rim, bright at opposite corners */
+    will-change:scale,height,width}
+  /* the tab row is the bar at rest; when the sheet opens it becomes the inner bar, inset 14 on three sides.
+     Its height shrinks 76 -> 64 as the sheet opens, and it counter-scales against the sheet's pull stretch (--sheet-x/y, weighted by --lock) so it never stretches. */
+  #nav-row{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;align-self:stretch;
+    height:calc(76px - var(--p,0) * 12px);transform-origin:50% 100%;
+    scale:calc(1 / (1 + (var(--sheet-x,1) - 1) * var(--lock,0))) calc(1 / (1 + (var(--sheet-y,1) - 1) * var(--lock,0)));
+    padding:0 27px;margin:0 calc(var(--p,0) * 14px) calc(var(--p,0) * 14px);border-radius:36px;
+    background:rgba(255,255,255,calc(var(--p,0) * .06));border:1px solid rgba(255,255,255,calc(var(--p,0) * .14));box-shadow:inset 0 1px 0 rgba(255,255,255,calc(var(--p,0) * .12))}
+  #nav .ni{flex:1;min-width:0;height:49px;justify-content:center;gap:2px;padding:0;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.01em;white-space:nowrap;position:relative;z-index:2;opacity:1;transition:color .2s,opacity .2s}
+  #nav .ni .ico{width:27px;height:27px;stroke-width:2;transition:transform .35s var(--spring)}
+  #nav .ni.on .ico,#nav .ni.hot .ico{transform:scale(1.1)}
+  #nav .ni.hot{color:var(--accent);opacity:1}
+  #nav .ni.on{color:var(--accent);opacity:1}
+  #nav.is-dragging .ni.on:not(.hot){color:var(--ink);opacity:1}
+  /* grabber: visible 52x4.5 pill, 6 from the top, with a bigger invisible tap area */
+  #nav-handle{position:absolute;z-index:4;top:0;left:50%;translate:-50% 0;width:96px;height:18px;cursor:pointer}
+  #nav-handle::before{content:"";position:absolute;left:50%;top:6px;translate:-50% 0;width:52px;height:4.5px;border-radius:3px;background:color-mix(in srgb,var(--ink) 38%,transparent)}
+  /* specular rim + light pooling that follows the lens; the sheet gets a frosted top-left glow as it opens */
   #nav::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
     background:linear-gradient(135deg,#fffffff2,#ffffff14 28%,#ffffff0a 62%,#ffffffd9);
     -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
     mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
-
-  /* light pooling that follows the lens */
   #nav::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
-    background:radial-gradient(70px 48px at var(--lx,50%) 50%,#ffffff40,transparent 70%)}
+    background:radial-gradient(70px 48px at var(--lx,50%) 50%,rgba(255,255,255,calc(.25 * (1 - var(--p,0)))),transparent 70%),
+      radial-gradient(120% 70% at 18% 0%,rgba(255,255,255,calc(var(--p,0) * .16)),transparent 70%),rgba(255,255,255,calc(var(--p,0) * .05))}
+  /* selection pill: darker, sits inside the row, stays visible when the sheet is open */
+  #nav .glass-indicator{display:block;position:absolute;z-index:1;left:0;top:50%;height:49px;width:84px;border-radius:999px;pointer-events:none;will-change:transform,width,height;
+    background:var(--lens-bg,rgba(0,0,0,.32));border:1px solid rgba(255,255,255,.1);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -8px 16px rgba(0,0,0,.12);transition:background .22s,border-color .22s,box-shadow .22s}
+  #nav .glass-indicator::after{content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .22s ease;
+    background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.06) 52%,rgba(255,255,255,.12))}
+  /* once its own LiquidGL instance is live the lens refracts what is behind it; keep only a light tint */
+  #nav .glass-indicator.liquid-glass-ready{position:absolute!important;opacity:1!important;pointer-events:none!important;transition:none!important;overflow:hidden;
+    background:color-mix(in srgb,var(--lens-bg) 45%,transparent)!important}
+  #nav.lifted .glass-indicator{border-color:rgba(255,255,255,.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.46),inset 0 -1px 0 rgba(255,255,255,.08),0 3px 10px rgba(0,0,0,.1)}
+  #nav.lifted .glass-indicator::after{opacity:1}
+  /* LiquidGL sets inline opacity/transition/pointer-events on its target; these win over it */
+  #nav.liquid-glass-ready,#nav.liquid-gl-loading{pointer-events:auto!important;transition:none!important}
+  #nav.liquid-glass-ready{background:transparent!important;-webkit-backdrop-filter:blur(max(0px,calc(var(--p,0) * 5px))) saturate(calc(1 + var(--p,0) * .25))!important;backdrop-filter:blur(max(0px,calc(var(--p,0) * 5px))) saturate(calc(1 + var(--p,0) * .25))!important}
+  #nav.liquid-gl-loading{opacity:1!important;background:var(--glass-tint)!important;-webkit-backdrop-filter:blur(14px) saturate(200%) brightness(1.04)!important;backdrop-filter:blur(14px) saturate(200%) brightness(1.04)!important}
 
-  #nav.expanded .glass-indicator{display:none !important;}
-  #nav .ni{position:relative;z-index:2;transition:color .2s,opacity .2s}
-  #nav .ni svg,#nav .ni img{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
-  #nav .ni.on{background:transparent}
-  #nav .ni.on svg,#nav .ni.hot svg,#nav .ni.on img,#nav .ni.hot img{transform:scale(1.1)}
-  #nav .ni.hot{color:var(--accent);opacity:1}
-  #nav.is-dragging .ni.on:not(.hot){color:var(--ink);opacity:.65}
-
-  #nav .glass-indicator{display:block;position:fixed;z-index:1;left:0;top:auto;bottom:4px;height:40px;width:56px;
-    border-radius:999px;pointer-events:none;will-change:transform;
-    background:rgba(24,20,32,.28);
-    border:0!important;outline:0!important;
-    box-shadow:none!important;
-    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-    transition:background .25s}
-  #nav.lifted .glass-indicator{
-    background:rgba(24,20,32,.34);
-    border:0!important;outline:0!important;box-shadow:none!important;
-    -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-  #nav.liquid-glass-ready .glass-indicator{background:transparent!important}
-
-  /* pill <-> drawer morph */
-  #nav{justify-content:flex-end}
-  #nav.pulling{overflow:hidden}
-  #nav-handle{opacity:calc(.25 * clamp(0, 1 - var(--p,0) * 4, 1))}
-  #nav-row{display:flex;align-items:center;position:relative;z-index:2;
-    opacity:clamp(0, calc(1 - var(--p,0) * 2.2), 1)}
-  #nav .glass-indicator{opacity:clamp(0, calc(1 - var(--p,0) * 2.2), 1)}
-
-  #account-drawer{position:absolute;top:12px;left:50%;translate:-50% 0;
-    display:flex;flex-direction:column;gap:6px;box-sizing:border-box;pointer-events:none;
-    opacity:clamp(0, calc(var(--p,0) * 1.8 - .6), 1)}
-  #account-drawer input{-webkit-user-select:text;user-select:text}
-
-  #nav.expanded{border-radius:24px;padding:12px 18px;width:min(calc(90vw * var(--nav-scale-inverse,1)),320px)}
-  #nav.expanded #nav-row,#nav.expanded #nav-handle{display:none}
-  #nav.expanded #account-drawer{position:static;translate:none;width:100%!important;
-    pointer-events:auto;opacity:1}
+  /* iOS scroll-edge effect: content softly blurs out under the bar and the status bar */
+  body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(env(safe-area-inset-bottom) + var(--nav-h,76px) + 34px);pointer-events:none;z-index:3;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    -webkit-mask:linear-gradient(to top,#000 25%,transparent);mask:linear-gradient(to top,#000 25%,transparent);background:linear-gradient(to top,color-mix(in srgb,var(--bg) 55%,transparent),transparent)}
+  body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top);pointer-events:none;z-index:3;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);-webkit-mask:linear-gradient(#000 40%,transparent);mask:linear-gradient(#000 40%,transparent)}
+  body.nonav::after,body.nonav::before{display:none}
+  /* pill <-> sheet morph: content fades in out of a blur (the frosty reveal) */
+  #account-drawer{position:absolute;top:26px;left:50%;translate:-50% 0;z-index:2;display:flex;flex-direction:column;gap:6px;box-sizing:border-box;pointer-events:none;
+    opacity:clamp(0,calc(var(--p,0) * 1.8 - .6),1);filter:blur(max(0px,calc((1 - var(--p,0)) * 8px)))}
+  #account-drawer>label,#account-drawer>.row{width:100%;margin-inline:auto}
+  #nav.expanded{border-radius:38px;width:min(calc((100vw - 28px) * var(--nav-scale-inverse,1)),364px)}
+  #nav.expanded #account-drawer{position:relative;top:auto;left:auto;translate:none;align-self:stretch;width:auto!important;margin:26px 14px 10px;pointer-events:auto;opacity:1;filter:none}
 }
-@media(prefers-reduced-motion:reduce){
-  #nav,#nav .ni,#nav .ni svg,#nav .ni img,#nav .glass-indicator{transition:none!important}
-}
+#account-drawer label{font-size:12px;margin:2px 0}
+#account-drawer input{padding:6px 10px;margin:2px 0;font-size:13px;-webkit-user-select:text;user-select:text}
+#account-drawer #drawer-border-color{padding:2px;height:30px}
+#account-drawer .row{margin-top:6px}
+#account-drawer .row button{flex:1;padding:6px;font-size:13px}
+#account-drawer #drawer-change-avatar{margin-top:2px;font-size:11px;padding:4px 10px}
+.dav{text-align:center;margin:2px 0}
+.av{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;border:2px solid var(--bc);background:#8883;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+@media(prefers-reduced-motion:reduce){#nav,#nav .ni,#nav .ni .ico,#nav .glass-indicator{transition:none!important}}
 @media(min-width:768px){
-  #nav{left:0;top:0;bottom:0;width:190px;flex-direction:column;gap:6px;padding:16px 12px;background:var(--card);border-right:1px solid #8882;transition:width .2s}
-  #nav-handle{display:none}
+  #nav{left:0;top:0;bottom:0;width:190px;gap:6px;padding:16px 12px;background:var(--glass-bg);-webkit-backdrop-filter:blur(24px) saturate(190%);backdrop-filter:blur(24px) saturate(190%);border-right:1px solid #ffffff2e;box-shadow:inset -1px 0 0 #ffffff1f;transition:width .2s}
+  #nav-handle,#account-drawer{display:none}
   #nav-row{display:flex;flex-direction:column;gap:6px;width:100%}
-  #account-drawer{display:none}
   .ni{flex-direction:row;gap:12px;font-size:15px;padding:12px 14px;border-radius:14px;width:100%}
+  .ni.on{background:color-mix(in srgb,var(--accent) 22%,transparent)}
   .tgl{display:block;align-self:flex-end;background:none;color:var(--ink);padding:4px 10px;margin-bottom:8px;opacity:.6}
   body{padding-left:206px}body.min{padding-left:88px}body.nonav{padding-left:16px}
   body.min #nav{width:72px}body.min .ni span{display:none}body.min .ni{justify-content:center}
   main{max-width:640px;padding-bottom:40px}.grid{grid-template-columns:repeat(4,1fr)}
+  .messages{height:calc(100vh - 64px);min-height:400px;padding-bottom:72px}.message-composer{bottom:24px;left:calc(50% + 95px)}
 }
 </style></head>
 <body class="nonav"><div id="bg"></div><div id="toast"></div><nav id="nav"></nav><main id="app"></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <script>
-const SUPABASE_URL = 'https://vffhgnflcrlddodldprn.supabase.co', SUPABASE_KEY = 'sb_publishable_ucjyfX7n8IKT5TtUyGZVUw_VKeqjj3L';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const $ = s => document.querySelector(s), app = $('#app');
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sb = supabase.createClient('https://vffhgnflcrlddodldprn.supabase.co', 'sb_publishable_ucjyfX7n8IKT5TtUyGZVUw_VKeqjj3L');
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const app = $('#app'), nav = $('#nav'), rootStyle = document.documentElement.style;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const spring = (p, v, t, k, c, dt) => (v += (-k * (p - t) - c * v) * dt, [p + v * dt, v]);
 const ls = {get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} }};
-let me, people = {}, notes = [], photos = [], photoErr = '', tab = 'home', adding = false, viewing = null, collapsed = ls.get('nav') === 'min', expandedMenu = false;
+const isDesk = () => matchMedia('(min-width:768px)').matches;
+const reduced = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
+let me, people = {}, notes = [], photos = [], photoErr = '', tab = 'home', adding = false, viewing = null, collapsed = ls.get('nav') === 'min', expandedMenu = false, navK = 1;
 const urlCache = {};
 const partner = () => Object.values(people).find(p => p.id !== me);
 const online = p => p && Date.now() - new Date(p.last_seen) < 75000;
@@ -161,18 +192,18 @@ const seg = s => [...new Intl.Segmenter(undefined, {granularity: 'grapheme'}).se
 const isEmoji = g => /\p{Extended_Pictographic}/u.test(g);
 const emojiKey = s => { const g = seg(s)[0] || ''; return isEmoji(g) ? g.replace(/\uFE0F/g, '') : ''; };
 const notifOn = () => 'Notification' in window && Notification.permission === 'granted' && ls.get('notif') !== 'off';
+const glob = th => th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
 const icons = {
   home: '<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',
   notes: '<path d="M4 5h16v11H9l-5 4z"/>',
   photos: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-4 4 3 3-2 4 3"/>',
   settings: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'};
-const labels = {home: 'Home', notes: 'Notes', photos: 'Photos', settings: 'Settings'};
 
+/* ===== data ===== */
 function toast(msg, sys){
   const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
   clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', 4000);
-  if (sys && notifOn() && document.hidden)
-    navigator.serviceWorker?.ready.then(r => r.showNotification(sys.title, {body: sys.body}));
+  if (sys && notifOn() && document.hidden) navigator.serviceWorker?.ready.then(r => r.showNotification(sys.title, {body: sys.body}));
 }
 async function signed(paths){
   const need = paths.filter(p => !urlCache[p]);
@@ -198,68 +229,74 @@ async function setBg(g){
   if (!u) { el.dataset.k = ''; return; }
   el.innerHTML = g.type === 'video' ? `<video src="${u}" autoplay loop muted playsinline></video>` : `<img src="${u}" alt="">`;
 }
-async function applyTheme(){
-  const th = people[me]?.theme || {}, r = document.documentElement.style;
-  const g = th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
-  const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
-  const media = g.on && g.type !== 'color' && g.path;
-  const bg = g.on && g.type === 'color' && th.bg ? th.bg : (sysDark ? '#17131f' : '#f2effa');
-  const n = parseInt(bg.slice(1), 16), dark = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255 < 0.5;
-  r.setProperty('--accent', th.accent || '#e0457b');
-  r.setProperty('--bg', bg);
-  r.setProperty('--ink', dark ? '#f1eefb' : '#241f33');
-  r.setProperty('--card', dark ? 'color-mix(in srgb, ' + bg + ' 85%, white)' : '#fff');
-  r.setProperty('--glass-tint', dark ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.38)');
-  r.setProperty('--font', th.font || 'ui-rounded,system-ui,sans-serif');
-  const navScale = Math.min(1.2, Math.max(.8, Number(th.navScale) || 1));
-  r.setProperty('--nav-scale', navScale);
-  r.setProperty('--nav-scale-inverse', 1 / navScale);
-  setBg(media ? g : null);
-
-  const paths = Object.values(people).map(p => p.avatar_url).filter(Boolean);
-  if (paths.length) await signed(paths);
+function setNavScale(v){
+  navK = clamp(Number(v) || 1, .8, 1.2);
+  rootStyle.setProperty('--nav-scale', navK); rootStyle.setProperty('--nav-scale-inverse', 1 / navK);
+  syncComposer();
 }
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
-
+async function applyTheme(){
+  const th = people[me]?.theme || {}, g = glob(th);
+  const bg = g.on && g.type === 'color' && th.bg ? th.bg : '#17131f';
+  const n = parseInt(bg.slice(1), 16), dark = (.299 * (n >> 16) + .587 * ((n >> 8) & 255) + .114 * (n & 255)) / 255 < .5;
+  Object.entries({'--accent': th.accent || '#e0457b', '--bg': bg, '--ink': dark ? '#f1eefb' : '#241f33',
+    '--card': dark ? `color-mix(in srgb, ${bg} 85%, white)` : '#fff', '--glass-tint': dark ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.38)',
+    '--lens-bg': dark ? 'rgba(0,0,0,.32)' : 'rgba(0,0,0,.08)',
+    '--font': th.font || 'ui-rounded,system-ui,sans-serif'}).forEach(([k, v]) => rootStyle.setProperty(k, v));
+  setNavScale(th.navScale);
+  setBg(g.on && g.type !== 'color' && g.path ? g : null);
+  await signed(Object.values(people).map(p => p.avatar_url).filter(Boolean));
+}
+async function save(patch){
+  const { error } = await sb.from('profiles').update(patch).eq('id', me);
+  if (error) { toast('Could not save: ' + error.message); return false; }
+  Object.assign(people[me], patch); applyTheme(); render(); return true;
+}
+async function heartbeat(){
+  if (document.hidden || !me) return;
+  people[me].last_seen = new Date().toISOString();
+  await sb.from('profiles').update({last_seen: people[me].last_seen}).eq('id', me);
+}
 async function boot(){
   const { data: { session } } = await sb.auth.getSession();
   if (!session) return login();
   me = session.user.id; document.body.classList.remove('nonav');
-  let { data: ps, error: pe } = await sb.from('profiles').select('*');
-  if (pe) throw pe;
+  const profiles = () => sb.from('profiles').select('*');
+  let { data: ps, error } = await profiles();
+  if (error) throw error;
   if (!ps.some(p => p.id === me)) {
-    const { error: ie } = await sb.from('profiles').insert({id: me});
-    if (ie) throw new Error('Your account has no profile row. Run fix.sql in Supabase. (' + ie.message + ')');
-    ({ data: ps, error: pe } = await sb.from('profiles').select('*'));
-    if (pe) throw pe;
+    ({ error } = await sb.from('profiles').insert({id: me}));
+    if (error) throw new Error('Your account has no profile row. Run fix.sql in Supabase. (' + error.message + ')');
+    ({ data: ps, error } = await profiles());
+    if (error) throw error;
   }
   ps.forEach(p => people[p.id] = p);
-  const { data: ns, error: ne } = await sb.from('notes').select('*').order('created_at').limit(100);
+  const [{ data: ns, error: ne }, { data: ph, error: phe }] = await Promise.all([
+    sb.from('notes').select('*').order('created_at').limit(100),
+    sb.from('photos').select('*').order('created_at', {ascending: false}).limit(200)]);
   if (ne) throw ne;
-  notes = ns;
-  const { data: ph, error: phe } = await sb.from('photos').select('*').order('created_at', {ascending: false}).limit(200);
-  photos = ph || []; photoErr = phe ? phe.message : '';
-  if (photos.length) await signed(photos.map(x => x.path));
+  notes = ns; photos = ph || []; photoErr = phe ? phe.message : '';
+  await signed(photos.map(x => x.path));
+  const fields = ['status', 'emoji', 'name', 'avatar_url', 'border_color', 'theme'];
   sb.channel('us')
-    .on('postgres_changes', {event:'*', schema:'public', table:'profiles'}, async payload => {
-      const p = payload.new;
+    .on('postgres_changes', {event: '*', schema: 'public', table: 'profiles'}, async ({new: p}) => {
       const old = people[p.id]; people[p.id] = p;
       if (p.avatar_url) await signed([p.avatar_url]);
-      if (p.id !== me && old && (old.status !== p.status || old.emoji !== p.emoji))
-        toast(`${p.name} updated their Status to: ${p.emoji} ${p.status}`, {title: p.name, body: `updated their Status to: ${p.emoji} ${p.status}`});
+      if (p.id !== me && old && (old.status !== p.status || old.emoji !== p.emoji)) {
+        const text = `updated their Status to: ${p.emoji} ${p.status}`;
+        toast(`${p.name} ${text}`, {title: p.name, body: text});
+      }
       if (p.id === me) applyTheme();
-      const same = old && old.status === p.status && old.emoji === p.emoji && old.name === p.name && old.avatar_url === p.avatar_url && old.border_color === p.border_color && JSON.stringify(old.theme) === JSON.stringify(p.theme);
+      const same = old && fields.every(f => JSON.stringify(old[f]) === JSON.stringify(p[f]));
       if (tab === 'settings' && (same || p.id !== me)) return;
       if (!(same && /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))) render();
     })
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'notes'}, payload => {
-      const n = payload.new;
+    .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'notes'}, ({new: n}) => {
       if (notes.some(x => x.id === n.id)) return;
       notes.push(n);
       if (n.from_id !== me) { const nm = people[n.from_id]?.name || 'Your partner'; toast(`${nm} sent you a Note!`, {title: nm, body: 'sent you a Note!'}); }
       if (tab === 'notes') render();
     }).subscribe();
-  sb.channel('us-photos').on('postgres_changes', {event:'*', schema:'public', table:'photos'}, async e => {
+  sb.channel('us-photos').on('postgres_changes', {event: '*', schema: 'public', table: 'photos'}, async e => {
     if (e.eventType === 'DELETE') photos = photos.filter(x => x.id !== e.old.id);
     else if (e.eventType === 'INSERT' && !photos.some(x => x.id === e.new.id)) { await signed([e.new.path]); photos.unshift(e.new); }
     if (tab === 'photos') render();
@@ -268,14 +305,8 @@ async function boot(){
   document.addEventListener('visibilitychange', heartbeat);
   await applyTheme(); render();
 }
-async function heartbeat(){
-  if (document.hidden || !me) return;
-  const t = new Date().toISOString();
-  people[me].last_seen = t;
-  await sb.from('profiles').update({last_seen: t}).eq('id', me);
-}
 function login(){
-  document.body.classList.add('nonav'); $('#nav').innerHTML = '';
+  document.body.classList.add('nonav'); nav.innerHTML = '';
   app.innerHTML = `<div class="card"><h2>Us</h2>
     <input id="em" type="email" placeholder="Email" autocomplete="username">
     <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
@@ -286,493 +317,466 @@ function login(){
     if (error) $('#err').textContent = error.message; else boot().catch(showErr);
   };
 }
-async function save(patch){
-  const { error } = await sb.from('profiles').update(patch).eq('id', me);
-  if (error) { toast('Could not save: ' + error.message); return false; }
-  Object.assign(people[me], patch); applyTheme(); render(); return true;
+
+/* ===== LiquidGL (targets: the nav bar and the selector lens) ===== */
+let glass = null, lensGlass = null, glassLoad = null, glModP = null, viewGlass = null;
+const loadGL = () => glModP ||= import('https://cdn.jsdelivr.net/npm/liquid-gl@3.0.0/liquidGL.js').then(m => m.default);
+const killGlass = () => {
+  [].concat(glass || [], lensGlass || []).forEach(g => g.destroy?.());
+  glass = lensGlass = null;
+  nav.classList.remove('liquid-glass-ready', 'liquid-gl-loading');
+  $('#lens')?.classList.remove('liquid-glass-ready');
+};
+function setLensGlass(){   // bend the light harder while the lens is lifted, like iOS
+  const t = clamp((lg.s - 1) / (LIFT - 1), 0, 1);
+  [].concat(lensGlass || []).forEach(g => { if (g?.options) { g.options.refraction = .018 + .02 * t; g.options.bevelDepth = .1 + .08 * t; } });
 }
-
-/* ===== Liquid glass nav ===== */
-const isDesk = () => matchMedia('(min-width:768px)').matches;
-const navItems = () => [...$('#nav').querySelectorAll('[data-tab]')];
-const lg = {x:0, w:0, s:1, vx:0, vw:0, vs:0, tx:0, tw:0, lift:false, drag:false, raf:0, last:0, init:false};
-const LIFT = 1.16;
-let liquidGlassPromise = null, liquidGlass = null, liquidGlassInstance = null;
-
 function initLiquidGlass(){
-  if (isDesk() || document.body.classList.contains('nonav')) {
-    liquidGlassInstance?.destroy();
-    liquidGlassInstance = null;
-    $('#nav').classList.remove('liquid-glass-ready');
-    return;
-  }
-  if (liquidGlassInstance || liquidGlassPromise) return liquidGlassPromise;
-  liquidGlassPromise = import('https://cdn.jsdelivr.net/npm/liquid-gl@3.0.0/liquidGL.js').then(module => {
-    liquidGlass = module.default;
-    if (isDesk() || !$('#lens')) return;
-    liquidGlassInstance = liquidGlass({
-      target: '#lens',
-      content: false,
-      zIndex: 6,
-      snapshot: 'body',
-      engine: 'webgl2',
-      resolution: .8,
-      refraction: .016,
-      aberration: .06,
-      bevelDepth: .035,
-      bevelWidth: .12,
-      frost: 0,
-      shadow: true,
-      specular: true,
-      reveal: 'none',
-      tilt: false,
-      interaction: 'fluid',
-      interactionStrength: .12,
-      interactionRadius: .4,
-      interactionViscosity: .8,
-      on: {
-        init(){
-          $('#nav').classList.add('liquid-glass-ready');
-          document.querySelectorAll('canvas').forEach(canvas => {
-            canvas.style.setProperty('pointer-events', 'none', 'important');
-          });
-        }
-      }
+  if (isDesk() || document.body.classList.contains('nonav')) return killGlass();
+  if (glass || glassLoad) return glassLoad;
+  nav.classList.add('liquid-gl-loading');
+  return glassLoad = loadGL().then(liquidGL => {
+    if (isDesk() || !$('#lens')) return nav.classList.remove('liquid-gl-loading');
+    glass = liquidGL({
+      target: '#nav', snapshot: 'body', content: false, engine: 'auto', zIndex: 4, resolution: 1,
+      refraction: .012, aberration: .012, bevelDepth: .07, bevelWidth: .18, frost: .3, shadow: true, specular: true,
+      reveal: 'none', tilt: false, interaction: 'fluid', interactionStrength: .3, interactionRadius: .42, interactionViscosity: .72,
+      tint: 'rgba(255,255,255,.07)',
+      on: {init(g){
+        if (isDesk() || document.body.classList.contains('nonav')) return g?.destroy();
+        nav.classList.remove('liquid-gl-loading'); nav.classList.add('liquid-glass-ready');
+        $$('canvas').forEach(c => c.style.setProperty('pointer-events', 'none', 'important'));
+      }}
     });
-    liquidGlass.registerDynamic(navItems());
-  }).catch(error => {
-    console.warn('LiquidGL could not load; using the CSS glass fallback.', error);
-  }).finally(() => { liquidGlassPromise = null; });
-  return liquidGlassPromise;
+    lensGlass = liquidGL({
+      target: '#lens', snapshot: 'body', engine: 'auto', zIndex: 1, resolution: 1,
+      refraction: .018, aberration: .02, bevelDepth: .1, bevelWidth: .3, frost: 0, shadow: false, specular: true,
+      reveal: 'none', tilt: false, tint: 'rgba(255,255,255,0)',
+      on: {init(){
+        $('#lens')?.classList.add('liquid-glass-ready');
+        $$('canvas').forEach(c => c.style.setProperty('pointer-events', 'none', 'important'));
+      }}
+    });
+  }).catch(e => { killGlass(); console.warn('LiquidGL could not load; using the CSS glass fallback.', e); })
+    .finally(() => glassLoad = null);
 }
 
-function selectTab(t){
-  if (expandedMenu) closeMenu();
-  if (t !== tab) { tab = t; viewing = null; render(); scrollTo(0, 0); } else lgSync();
+/* ===== LiquidGL for floating pills inside views (.gl: message composer, name pill) ===== */
+const killViewGlass = () => { [].concat(viewGlass || []).forEach(g => g.destroy?.()); viewGlass = null; };
+function initViewGlass(){
+  killViewGlass();
+  if (!$('#app .gl')) return;
+  loadGL().then(liquidGL => {
+    if (!$('#app .gl')) return;
+    killViewGlass();
+    viewGlass = liquidGL({
+      target: '#app .gl', snapshot: 'body', engine: 'auto', zIndex: 1, resolution: 1,
+      refraction: .02, aberration: .014, bevelDepth: .08, bevelWidth: .22, frost: .2, shadow: true, specular: true,
+      reveal: 'none', tilt: false, interaction: 'fluid', interactionStrength: .25, interactionRadius: .5, interactionViscosity: .72, tint: 'rgba(255,255,255,.05)',
+      on: {init(){
+        $$('#app .gl').forEach(el => el.classList.add('liquid-glass-ready'));
+        $$('canvas').forEach(c => c.style.setProperty('pointer-events', 'none', 'important'));
+      }}
+    });
+  }).catch(e => console.warn('LiquidGL (views) could not load; using the CSS glass fallback.', e));
 }
 
-function syncMessageComposerPosition(){
-  if (matchMedia('(min-width:768px)').matches) return;
-  const nav = $('#nav');
-  if (!nav || document.body.classList.contains('nonav')) return;
-  const gap = 16;
-  document.documentElement.style.setProperty('--message-composer-bottom', `${nav.getBoundingClientRect().height + gap}px`);
+/* ===== nav: lens spring ===== */
+const lg = {x: 0, w: 0, s: 1, vx: 0, vw: 0, vs: 0, tx: 0, tw: 0, kx: 1, ky: 1, vkx: 0, vky: 0, lift: false, drag: false, raf: 0, last: 0, init: false};
+const LIFT = 1.08;
+const FROST0 = .3, FROST1 = 1.1;
+function setMotion(){   // lens stretch x sheet stretch, one writer for the nav's scale; --sheet-x/y lets the inner bar cancel the sheet part
+  nav.style.setProperty('--nav-motion-x', (lg.kx * mn.sx).toFixed(4)); nav.style.setProperty('--nav-motion-y', (lg.ky * mn.sy).toFixed(4));
+  nav.style.setProperty('--sheet-x', mn.sx.toFixed(4)); nav.style.setProperty('--sheet-y', mn.sy.toFixed(4));
 }
+function setFrost(p){   // LiquidGL reads lens options per frame; frost the glass as the sheet opens
+  const f = FROST0 + (FROST1 - FROST0) * clamp(p, 0, 1);
+  [].concat(glass || []).forEach(g => { if (g?.options) g.options.frost = f; });
+}
+const navItems = () => $$('#nav [data-tab]');
+const bx = b => b.offsetLeft;   // button x in #nav-row coordinates
+const maxX = w => Math.max(0, $('#nav-row').clientWidth - w);
 
-function syncTabs(){
-  navItems().forEach(b => {
-    const on = b.dataset.tab === tab && !expandedMenu;
-    b.classList.toggle('on', on);
-    on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
-  });
+function lgSync(){
+  if (isDesk()) return;
+  const items = navItems(), b = items.find(x => x.dataset.tab === tab) || items[0];
+  if (!b?.offsetWidth) return;
+  lg.tw = b.offsetWidth + 14; lg.tx = clamp(bx(b) - 7, 0, maxX(lg.tw));
+  if (!lg.init || reduced()) { Object.assign(lg, {x: lg.tx, w: lg.tw, vx: 0, vw: 0, init: true}); lgPaint(); } else lgStart();
 }
-
-function buildNav(){
-  const nav = $('#nav');
-  if (!nav.querySelector('#nav-row')) {
-    nav.innerHTML = `
-      <div id="nav-handle" title="Swipe up for Account Settings" aria-label="Swipe up for Account Settings"></div>
-      <button class="tgl" id="tgl" aria-label="Collapse menu"></button>
-      <span class="glass-indicator" id="lens" aria-hidden="true"></span>
-      <div id="nav-row">
-        ${Object.keys(icons).map(t => `<button class="ni" data-tab="${t}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[t]}</svg><span>${labels[t]}</span></button>`).join('')}
-      </div>
-      <div id="account-drawer"></div>`;
-  }
-
-  $('#tgl').textContent = collapsed ? '»' : '«';
-  syncTabs();
-  const dr = $('#account-drawer');
-  if (!dr.firstChild) { fillDrawer(); dr.inert = true; }   // content exists before the first pull
-}
-
-function fillDrawer(keepName){
-  const d = $('#account-drawer'); if (!d) return;
-  const prev = keepName && $('#drawer-name') ? $('#drawer-name').value : null;
-  const mine = people[me] || {};
-  const avatarUrl = mine.avatar_url ? urlCache[mine.avatar_url] : '';
-  const borderColor = mine.border_color || '#e0457b';
-  d.innerHTML = `
-    <div style="text-align:center; margin:2px 0">
-      <div style="position:relative; display:inline-block">
-        <img id="drawer-avatar-preview" src="${avatarUrl || ''}" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid ${borderColor}; display:${avatarUrl ? 'block' : 'none'}">
-        <div id="drawer-avatar-placeholder" style="width:48px; height:48px; border-radius:50%; background:#8883; display:${avatarUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; border:2px solid ${borderColor}">👤</div>
-      </div>
-      <div><button class="ghost" id="drawer-change-avatar" style="margin-top:2px; font-size:11px; padding:4px 10px">Change Picture</button></div>
-      <input id="drawer-avatar-file" type="file" accept="image/*" hidden>
-    </div>
-    <label style="font-size:12px; margin:2px 0">Display Name<input id="drawer-name" value="${esc(mine.name)}" style="padding:6px 10px; margin:2px 0; font-size:13px"></label>
-    <label style="font-size:12px; margin:2px 0">Profile Border Color<input id="drawer-border-color" type="color" value="${borderColor}" style="padding:2px; height:30px; margin:2px 0"></label>
-    <div class="row" style="margin-top:6px">
-      <button id="drawer-save" style="flex:1; padding:6px; font-size:13px">Save</button>
-      <button class="ghost" id="drawer-close" style="flex:1; padding:6px; font-size:13px">Close</button>
-    </div>`;
-  if (prev !== null) $('#drawer-name').value = prev;
-
-  $('#drawer-close').onclick = closeMenu;
-  $('#drawer-change-avatar').onclick = () => $('#drawer-avatar-file').click();
-  $('#drawer-avatar-file').onchange = async e => {
-    const f = e.target.files[0]; if (!f) return;
-    toast('Uploading profile picture...');
-    const path = await upload(f, 'avatars');
-    if (path) { await signed([path]); await save({avatar_url: path}); fillDrawer(true); toast('Profile picture updated!'); }
-  };
-  $('#drawer-save').onclick = async () => {
-    if (await save({name: $('#drawer-name').value.trim(), border_color: $('#drawer-border-color').value})) {
-      toast('Account settings saved'); closeMenu();
-    }
-  };
-}
-
-/* ===== Pill <-> account drawer morph ===== */
-const mn = {p: 0, raf: 0, pill: {w: 0, h: 0}, big: {w: 0, h: 0}};
-
-function measurePill(){
-  const n = $('#nav'), w = n.style.width, h = n.style.height, ex = n.classList.contains('expanded');
-  n.classList.remove('expanded'); n.style.width = n.style.height = '';
-  const r = {w: n.offsetWidth, h: n.offsetHeight};
-  if (ex) n.classList.add('expanded');
-  n.style.width = w; n.style.height = h;
-  return r;
-}
-function mnLayout(){
-  const d = $('#account-drawer'), inverseScale = parseFloat(getComputedStyle($('#nav')).getPropertyValue('--nav-scale-inverse')) || 1;
-  const w = Math.min(innerWidth * .9 * inverseScale, 320);
-  mn.pill = measurePill();
-  d.style.width = (w - 36) + 'px';
-  mn.big = {w, h: d.offsetHeight + 24};
-}
-function mnPaint(){
-  const n = $('#nav'), k = Math.max(0, mn.p), L = (a, b) => a + (b - a) * k;
-  n.style.setProperty('--p', Math.min(1, k));
-  if (k === 0 && !expandedMenu) {
-    n.classList.remove('pulling');
-    n.style.width = n.style.height = n.style.borderRadius = '';
-    $('#lens').style.left = ''; return;
-  }
-  const w = L(mn.pill.w, mn.big.w);
-  n.classList.add('pulling');
-  n.style.width = w + 'px';
-  n.style.height = L(mn.pill.h, mn.big.h) + 'px';
-  n.style.borderRadius = L(mn.pill.h / 2, 24) + 'px';
-  $('#lens').style.left = (w - mn.pill.w) / 2 + 'px';   // keeps the lens over its icon while the nav widens
-}
-function mnTo(target, v = 0){
-  cancelAnimationFrame(mn.raf);
-  if (matchMedia('(prefers-reduced-motion:reduce)').matches) { mn.p = target; mnPaint(); mn.raf = 0; return mnSettled(); }
-  let last = performance.now();
-  const step = now => {
-    const dt = Math.min(.032, (now - last) / 1000); last = now;
-    v += (-300 * (mn.p - target) - 30 * v) * dt; mn.p += v * dt;
-    if (Math.abs(mn.p - target) < .002 && Math.abs(v) < .03) { mn.p = target; mnPaint(); mn.raf = 0; return mnSettled(); }
-    mnPaint(); mn.raf = requestAnimationFrame(step);
-  };
-  mn.raf = requestAnimationFrame(step);
-}
-function mnSettled(){
-  const n = $('#nav'), d = $('#account-drawer');
-  if (mn.p >= 1) {                       // hand over to the CSS .expanded layout (same size, so no jump)
-    n.classList.add('expanded'); n.classList.remove('pulling');
-    n.style.width = n.style.height = n.style.borderRadius = '';
-    $('#lens').style.left = ''; d.inert = false;
-  } else {
-    n.classList.remove('expanded', 'pulling'); d.inert = true; mnPaint(); lgSync(true);
-  }
-}
-function openMenu(v){ expandedMenu = true; syncTabs(); mnTo(1, v); }
-function closeMenu(){
-  if (!expandedMenu) return;
-  const n = $('#nav'); cancelAnimationFrame(mn.raf);
-  const big = {w: n.offsetWidth, h: n.offsetHeight};
-  mn.pill = measurePill(); mn.big = big; mn.p = 1;
-  $('#account-drawer').style.width = (big.w - 36) + 'px';
-  expandedMenu = false; n.classList.remove('expanded'); syncTabs(); mnPaint();
-  mnTo(0);
-}
-document.addEventListener('pointerdown', e => { if (expandedMenu && !e.target.closest('#nav')) closeMenu(); });
-
-const bx = b => b.offsetLeft + $('#nav-row').offsetLeft;   // button x in #nav coordinates
-function lgSync(snap){
-  if (isDesk() || expandedMenu) return;
-  const items = navItems(); if (!items.length) return;
-  const b = items.find(x => x.dataset.tab === tab) || items[0];
-  lg.tx = bx(b);
-  lg.tw = b.offsetWidth;
-  if (!lg.tw) return;
-  if (snap || !lg.init || matchMedia('(prefers-reduced-motion:reduce)').matches) { lg.x = lg.tx; lg.w = lg.tw; lg.init = true; lgPaint(); }
-  else lgStart();
-}
-function setLift(v){ lg.lift = v; $('#nav').classList.toggle('lifted', v); lgStart(); }
+function setLift(v){ lg.lift = v; nav.classList.toggle('lifted', v); lgStart(); }
 function lgPaint(){
   const el = $('#lens'); if (!el) return;
-  const st = Math.min(.22, Math.abs(lg.vx) / 2600);
-  el.style.width = lg.w + 'px';
-  el.style.transform = `translate3d(${lg.x}px,0,0) scale(${lg.s * (1 + st)},${lg.s * (1 - st * .6)})`;
-  $('#nav').style.setProperty('--lx', (lg.x + lg.w / 2) + 'px');
+  const st = Math.min(.22, Math.abs(lg.vx) / 2600), W = $('#nav-row').clientWidth;
+  const w = Math.min(W, lg.w * lg.s * (1 + st)), h = clamp(49 * lg.s * (1 - st * .6), 0, Math.max(0, $('#nav-row').clientHeight - 6));
+  setMotion(); setLensGlass();
+  nav.style.setProperty('--lx', (lg.x + lg.w / 2 + $('#nav-row').offsetLeft) + 'px');
+  Object.assign(el.style, {transform: `translate3d(${clamp(lg.x + (lg.w - w) / 2, 0, W - w)}px,-50%,0)`, width: w + 'px', height: h + 'px'});
 }
 function lgStart(){ if (!lg.raf) { lg.last = performance.now(); lg.raf = requestAnimationFrame(lgFrame); } }
 function lgFrame(now){
   const dt = Math.min(.032, (now - lg.last) / 1000); lg.last = now;
-  const sp = (p, v, t, k, c) => { v += (-k * (p - t) - c * v) * dt; return [p + v * dt, v]; };
-  const ts = lg.lift ? LIFT : 1;
-  [lg.x, lg.vx] = sp(lg.x, lg.vx, lg.tx, lg.drag ? 520 : 300, lg.drag ? 34 : 21);
-  [lg.w, lg.vw] = sp(lg.w, lg.vw, lg.tw, 300, 24);
-  [lg.s, lg.vs] = sp(lg.s, lg.vs, ts, 320, 17);
-  lgPaint();
-  const rest = Math.abs(lg.x - lg.tx) < .1 && Math.abs(lg.vx) < .5 && Math.abs(lg.w - lg.tw) < .1 &&
-               Math.abs(lg.vw) < .5 && Math.abs(lg.s - ts) < .002 && Math.abs(lg.vs) < .01;
-  if (rest && !lg.drag) { lg.x = lg.tx; lg.w = lg.tw; lg.s = ts; lg.vx = lg.vw = lg.vs = 0; lgPaint(); lg.raf = 0; return; }
-  lg.raf = requestAnimationFrame(lgFrame);
+  const ts = lg.lift ? LIFT : 1, stretch = lg.drag ? Math.min(.018, Math.abs(lg.vx) / 7000) : 0;
+  const kxT = 1 + (lg.lift ? .008 : 0) + stretch, kyT = 1 + (lg.lift ? .005 : 0) - stretch * .3;
+  [lg.x, lg.vx] = spring(lg.x, lg.vx, lg.tx, lg.drag ? 900 : 260, lg.drag ? 54 : 25, dt);
+  [lg.w, lg.vw] = spring(lg.w, lg.vw, lg.tw, 260, 25, dt);
+  [lg.s, lg.vs] = spring(lg.s, lg.vs, ts, 380, 26, dt);
+  [lg.kx, lg.vkx] = spring(lg.kx, lg.vkx, kxT, 190, 25, dt);
+  [lg.ky, lg.vky] = spring(lg.ky, lg.vky, kyT, 190, 25, dt);
+  const max = maxX(lg.w);
+  lg.x = clamp(lg.x, 0, max); lg.tx = clamp(lg.tx, 0, max);
+  if ((lg.x === 0 && lg.vx < 0) || (lg.x === max && lg.vx > 0)) lg.vx = 0;
+  const rest = [[lg.x, lg.tx, .1], [lg.vx, 0, .5], [lg.w, lg.tw, .1], [lg.vw, 0, .5], [lg.s, ts, .002], [lg.vs, 0, .01],
+    [lg.kx, kxT, .0005], [lg.ky, kyT, .0005], [lg.vkx, 0, .002], [lg.vky, 0, .002]].every(([a, b, e]) => Math.abs(a - b) < e);
+  if (rest && !lg.drag) { Object.assign(lg, {x: lg.tx, w: lg.tw, s: ts, kx: kxT, ky: kyT, vx: 0, vw: 0, vs: 0, vkx: 0, vky: 0, raf: 0}); return lgPaint(); }
+  lgPaint(); lg.raf = requestAnimationFrame(lgFrame);
 }
 
+/* ===== nav: pill <-> account drawer morph ===== */
+const mn = {p: 0, v: 0, sx: 1, sy: 1, target: 0, raf: 0, pill: {w: 0, h: 0}, big: {w: 0, h: 0}};
+function measurePill(){
+  const {width: w, height: h} = nav.style, ex = nav.classList.contains('expanded'), pp = nav.style.getPropertyValue('--p');
+  nav.classList.remove('expanded'); nav.style.width = nav.style.height = ''; nav.style.setProperty('--p', '0');
+  const r = {w: nav.offsetWidth, h: nav.offsetHeight};
+  nav.classList.toggle('expanded', ex); Object.assign(nav.style, {width: w, height: h}); nav.style.setProperty('--p', pp || '0');
+  return r;
+}
+function mnLayout(){
+  const w = Math.min((innerWidth - 28) / navK, 364);
+  mn.pill = measurePill(); $('#account-drawer').style.width = (w - 30) + 'px';
+  mn.big = {w, h: $('#account-drawer').offsetHeight + 26 + 10 + 64 + 14 + 2};   // 64 = open inner bar height
+}
+function mnPaint(){
+  const k = clamp(mn.p, -.035, 1.035), L = (a, b) => a + (b - a) * k;
+  nav.style.setProperty('--p', Math.min(1, k));
+  nav.style.setProperty('--lock', Math.min(1, k * 3));   // how much the inner bar cancels the sheet's stretch
+  const shut = k === 0 && !expandedMenu;
+  Object.assign(nav.style, shut ? {width: '', height: '', borderRadius: ''}
+    : {width: L(mn.pill.w, mn.big.w) + 'px', height: L(mn.pill.h, mn.big.h) + 'px', borderRadius: L(39, 38) + 'px'});
+  const st = clamp(Math.abs(mn.v) * .02, 0, .03), over = Math.max(0, mn.p - 1);
+  mn.sx = 1 - st * .5 - over * .3; mn.sy = 1 + st + over * .6;
+  setMotion(); setFrost(k); syncComposer();   // content above the bar rides up with it every frame
+}
+function mnTo(target, v = 0){
+  cancelAnimationFrame(mn.raf); mn.target = target;
+  if (reduced()) { mn.p = target; mn.v = 0; mnPaint(); mn.raf = 0; return mnSettled(); }
+  v = clamp(v, -3, 3);
+  let last = performance.now();
+  const step = now => {
+    const elapsed = Math.min(.032, (now - last) / 1000), n = Math.max(1, Math.ceil(elapsed * 120)); last = now;
+    for (let i = 0; i < n; i++) { [mn.p, v] = spring(mn.p, v, target, 170, 22, elapsed / n); mn.p = clamp(mn.p, -.055, 1.055); }
+    mn.v = v;
+    if (Math.abs(mn.p - target) < .002 && Math.abs(v) < .03) { mn.p = target; mn.v = 0; mnPaint(); mn.raf = 0; return mnSettled(); }
+    mnPaint(); mn.raf = requestAnimationFrame(step);
+  };
+  mn.raf = requestAnimationFrame(step);
+}
+function mnSettled(){   // hand over to the CSS .expanded layout (same size, so no jump)
+  const open = mn.p >= 1;
+  nav.classList.toggle('expanded', open); $('#account-drawer').inert = !open;
+  if (open) nav.style.width = nav.style.height = nav.style.borderRadius = ''; else { mnPaint(); lgSync(); }
+}
+function openMenu(v){ expandedMenu = true; syncTabs(); mnTo(1, v); }
+function closeMenu(){
+  if (!expandedMenu) return;
+  cancelAnimationFrame(mn.raf);
+  const big = {w: nav.offsetWidth, h: nav.offsetHeight};
+  mn.pill = measurePill(); mn.big = big; mn.p = 1;
+  $('#account-drawer').style.width = (big.w - 30) + 'px';
+  expandedMenu = false; nav.classList.remove('expanded'); syncTabs(); mnPaint(); mnTo(0);
+}
+document.addEventListener('pointerdown', e => { if (expandedMenu && !e.target.closest('#nav')) closeMenu(); });
+
+/* ===== nav: build, drawer, input ===== */
+function syncComposer(){
+  if (isDesk() || document.body.classList.contains('nonav')) return;
+  const h = nav.offsetHeight * navK;   // layout height, so it tracks the morph without the stretch jitter
+  rootStyle.setProperty('--nav-h', h + 'px'); rootStyle.setProperty('--message-composer-bottom', h + 16 + 'px');
+}
+function syncTabs(){
+  navItems().forEach(b => {
+    const on = b.dataset.tab === tab;
+    b.classList.toggle('on', on);
+    on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
+  });
+}
+function selectTab(t){
+  if (expandedMenu) closeMenu();
+  if (t !== tab) { tab = t; syncTabs(); lgSync(); viewing = null; render(); scrollTo(0, 0); } else lgSync();
+}
+function fillDrawer(keepName){
+  const prev = keepName ? $('#drawer-name')?.value : null;
+  const m = people[me] || {}, url = m.avatar_url && urlCache[m.avatar_url], bc = m.border_color || '#e0457b';
+  $('#account-drawer').innerHTML = `
+    <div class="dav" style="--bc:${bc}"><div class="av">${url ? `<img src="${url}">` : '👤'}</div>
+      <div><button class="ghost" id="drawer-change-avatar">Change Picture</button></div>
+      <input id="drawer-avatar-file" type="file" accept="image/*" hidden></div>
+    <label>Display Name<input id="drawer-name" value="${esc(m.name)}"></label>
+    <label>Profile Border Color<input id="drawer-border-color" type="color" value="${bc}"></label>
+    <div class="row"><button id="drawer-save">Save</button><button class="ghost" id="drawer-close">Close</button></div>`;
+  if (prev != null) $('#drawer-name').value = prev;
+}
+const drawerActs = {
+  'drawer-close': closeMenu,
+  'drawer-change-avatar': () => $('#drawer-avatar-file').click(),
+  async 'drawer-save'(){
+    if (await save({name: $('#drawer-name').value.trim(), border_color: $('#drawer-border-color').value})) { toast('Account settings saved'); closeMenu(); }
+  }
+};
+async function setAvatar(f){
+  if (!f) return;
+  toast('Uploading profile picture...');
+  const path = await upload(f, 'avatars');
+  if (path) { await signed([path]); await save({avatar_url: path}); fillDrawer(true); toast('Profile picture updated!'); }
+}
+function buildNav(){
+  if (!$('#nav-row')) {
+    nav.innerHTML = `<div id="nav-handle" title="Swipe up for Account Settings" aria-label="Swipe up for Account Settings"></div>
+      <button class="tgl" id="tgl" aria-label="Collapse menu"></button>
+      <div id="account-drawer"></div>
+      <div id="nav-row"><span class="glass-indicator" id="lens" aria-hidden="true"></span>${Object.entries(icons).map(([t, d]) => `<button class="ni" data-tab="${t}"><svg class="ico" viewBox="0 0 24 24">${d}</svg><span>${t[0].toUpperCase() + t.slice(1)}</span></button>`).join('')}</div>`;
+    const dr = $('#account-drawer');
+    $('#tgl').onclick = () => { collapsed = !collapsed; ls.set('nav', collapsed ? 'min' : 'max'); render(); };
+    dr.onclick = e => drawerActs[e.target.closest('button')?.id]?.();
+    dr.onchange = e => e.target.id === 'drawer-avatar-file' && setAvatar(e.target.files[0]);
+    fillDrawer(); dr.inert = true;   // content exists before the first pull
+  }
+  $('#tgl').textContent = collapsed ? '»' : '«';
+  syncTabs();
+}
 function initNav(){
-  const nav = $('#nav');
-  let pid = null, sx = 0, sy = 0, ly = 0, lt = 0, vy = 0, grab = 0, startBtn = null;
-  let dragging = false, pulling = false, onHandle = false;
-  const local = e => { const r = nav.getBoundingClientRect(); return (e.clientX - r.left) / (r.width / nav.offsetWidth); };
-  const near = cx => navItems().reduce((a, b) => Math.abs(bx(b) + b.offsetWidth / 2 - cx) < Math.abs(bx(a) + a.offsetWidth / 2 - cx) ? b : a);
+  let pid = null, sx = 0, sy = 0, ly = 0, lt = 0, vy = 0, grab = 0, startBtn = null, dragging = false, pulling = false, onHandle = false, p0 = 0, pullSign = 1, interrupted = false;
+  const local = e => { const row = $('#nav-row'), r = row.getBoundingClientRect(); return (e.clientX - r.left) / (r.width / row.offsetWidth); };
+  const mid = b => bx(b) + b.offsetWidth / 2;
+  const near = cx => navItems().reduce((a, b) => Math.abs(mid(b) - cx) < Math.abs(mid(a) - cx) ? b : a);
   const hot = b => navItems().forEach(x => x.classList.toggle('hot', x === b));
-  const travel = () => Math.max(80, mn.big.h - mn.pill.h) * (parseFloat(getComputedStyle(nav).getPropertyValue('--nav-scale')) || 1);
+  const travel = () => Math.max(80, mn.big.h - mn.pill.h) * navK;
+  function beginPull(){   // hand the nav to the JS-driven morph from wherever it is (closed, open or mid-flight)
+    const closed = !expandedMenu && mn.p < .01;
+    nav.classList.remove('expanded'); expandedMenu = false;
+    if (closed) fillDrawer();
+    mnLayout(); mnPaint(); syncTabs();
+  }
 
   nav.addEventListener('pointerdown', e => {
-    if (isDesk() || !e.isPrimary || pid !== null || expandedMenu || mn.raf) return;  // taps inside the open drawer are left alone
+    if (isDesk() || !e.isPrimary || pid !== null) return;
+    if (mn.p > .01 && e.target.closest('input,select,textarea,label,#account-drawer button')) return;   // controls in the open sheet keep their own taps
+    interrupted = !!mn.raf; if (interrupted) { cancelAnimationFrame(mn.raf); mn.raf = 0; }   // grab the sheet mid-flight
     const b = e.target.closest('[data-tab]');
     pid = e.pointerId; nav.setPointerCapture(pid);
     startBtn = b; onHandle = !!e.target.closest('#nav-handle');
-    sx = local(e); sy = ly = e.clientY; lt = e.timeStamp; vy = 0; dragging = pulling = false;
+    sx = local(e); sy = ly = e.clientY; lt = e.timeStamp; vy = 0; p0 = mn.p; dragging = pulling = false;
     if (!b) return;
     nav.classList.add('is-pressing');
-    const onLens = b.dataset.tab === tab;
-    grab = onLens ? sx - lg.x : lg.w / 2;
-    if (onLens) setLift(true);
+    grab = clamp(sx - lg.x, 0, lg.w);
+    if (b.dataset.tab === tab) setLift(true);
   });
-
   nav.addEventListener('pointermove', e => {
     if (e.pointerId !== pid) return;
     const x = local(e), dy = sy - e.clientY, dt = e.timeStamp - lt;
     if (dt > 0) vy = .8 * vy + .2 * ((ly - e.clientY) / dt) * 1000;   // px/s, up is positive
     ly = e.clientY; lt = e.timeStamp;
-
-    if (!pulling && !dragging && dy > 10) {
-      pulling = true; startBtn = null;
+    if (!pulling && !dragging && Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(x - sx) && (dy > 0 || p0 > .01)) {
+      pulling = true; pullSign = Math.sign(dy); startBtn = null;
       nav.classList.remove('is-pressing', 'is-dragging'); lg.drag = false; hot(null); setLift(false);
-      fillDrawer(); mnLayout();
+      beginPull();
     }
     if (pulling) {
-      let p = (dy - 10) / travel();
-      if (p > 1) p = 1 + (p - 1) * .25;          // rubber-band past fully open
-      mn.p = Math.max(0, p); mnPaint(); return;
+      const raw = p0 + (dy - pullSign * 10) / travel();   // follows the finger up or down from the current progress
+      mn.p = raw > 1 ? 1 + (raw - 1) * .25 : raw < 0 ? Math.max(-.05, raw * .15) : raw;   // rubber-band at both ends
+      mn.v = vy / travel();
+      return mnPaint();
     }
-
     if (!startBtn) return;
-    if (!dragging && Math.abs(x - sx) > 6) { dragging = true; lg.drag = true; nav.classList.add('is-dragging'); setLift(true); }
+    if (!dragging && Math.abs(x - sx) > 6) { dragging = lg.drag = true; nav.classList.add('is-dragging'); setLift(true); }
     if (!dragging) return;
-    const items = navItems(), min = bx(items[0]), max = bx(items.at(-1)) + items.at(-1).offsetWidth - lg.w;
-    let left = x - grab;
-    if (left < min) left = min - (min - left) * 0.25;
-    if (left > max) left = max + (left - max) * 0.25;
-    const h = near(left + lg.w / 2);
-    lg.tx = left; lg.tw = h.offsetWidth; hot(h); lgStart();
+    lg.tx = clamp(x - grab, 0, maxX(lg.w)); hot(near(lg.tx + lg.w / 2)); lgStart();
   });
-
   const end = cancel => e => {
     if (e.pointerId !== pid) return;
     const wasPull = pulling, tapHandle = onHandle && !dragging && !wasPull && !cancel;
-    const target = cancel || wasPull ? null : dragging ? near(lg.x + lg.w / 2) : startBtn;
-    pid = null; dragging = pulling = false; lg.drag = false; startBtn = null;
+    const target = cancel || wasPull ? null : dragging ? near(clamp(local(e) - grab, 0, maxX(lg.w)) + lg.w / 2) : startBtn;
+    pid = null; dragging = pulling = lg.drag = false; startBtn = null;
     nav.classList.remove('is-pressing', 'is-dragging'); hot(null); setLift(false);
-
     if (wasPull) {
-      const v = vy / travel();                    // progress units per second
-      const open = !cancel && ((mn.p > .4 && vy > -600) || vy > 600);
-      open ? openMenu(v) : mnTo(0, v);
-      return;
+      const v = vy / travel();   // progress units per second
+      return mn.p + v * .2 > .5 ? openMenu(v) : mnTo(0, v);   // settle where the flick would land
     }
-    if (tapHandle) { fillDrawer(); mnLayout(); openMenu(); return; }
-    if (target) selectTab(target.dataset.tab); else lgSync();
+    if (interrupted && !tapHandle) mnTo(mn.target);
+    if (tapHandle) { if (expandedMenu) return closeMenu(); fillDrawer(); mnLayout(); return openMenu(); }
+    target ? selectTab(target.dataset.tab) : lgSync();
   };
   nav.addEventListener('pointerup', end(false));
   nav.addEventListener('pointercancel', end(true));
-
-  nav.addEventListener('click', e => {
-    const b = e.target.closest('[data-tab]'); if (!b) return;
-    if (!isDesk() && e.detail > 0) return;
-    selectTab(b.dataset.tab);
+  nav.addEventListener('click', e => {   // keyboard activation only; pointer input is handled above
+    const b = e.target.closest('[data-tab]');
+    if (b && (isDesk() || !e.detail)) selectTab(b.dataset.tab);
   });
-  new ResizeObserver(() => { lgSync(true); syncMessageComposerPosition(); }).observe(nav);
-  addEventListener('resize', syncMessageComposerPosition);
+  new ResizeObserver(() => { if (mn.raf || (mn.p !== 0 && mn.p !== 1)) return; lgSync(); syncComposer(); }).observe(nav);
+  addEventListener('resize', syncComposer);
   matchMedia('(max-width:767px)').addEventListener('change', initLiquidGlass);
-  syncMessageComposerPosition();
+  syncComposer();
 }
 
-function render(){
-  const act = document.activeElement?.id, keep = {};
-  ['nt','ne','nx','drawer-name'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
-  const p = partner(), mine = people[me] || {}, presets = mine.theme?.presets || defPresets;
-  document.body.classList.toggle('min', collapsed);
-  buildNav();
-  let body = '';
-
-  const renderProfileTitle = (prof) => {
-    if (!prof) return `<p class="muted">Waiting for your partner to create their account.</p>`;
-    const avatar = prof.avatar_url ? urlCache[prof.avatar_url] : '';
-    const border = prof.border_color || 'var(--accent)';
-    return `<div class="hero-name-row">
-      ${avatar ? `<img class="hero-avatar" src="${avatar}" style="border:2px solid ${border}">` : ''}
-      <h2>${esc(prof.name)}</h2>
-    </div>
-    <div style="margin-top:6px">${esc(prof.emoji)} ${esc(prof.status)}</div>
-    <div class="muted" style="margin-top:4px"><span class="dot ${online(prof) ? 'on' : ''}"></span>${online(prof) ? 'Online now' : 'Last seen ' + new Date(prof.last_seen).toLocaleString()}</div>`;
-  };
-
-  if (tab === 'home') body = `
-    <div class="card hero">${renderProfileTitle(p)}</div>
+/* ===== views ===== */
+const heroTitle = p => !p ? '<p class="muted">Waiting for your partner to create their account.</p>' : `
+  <div class="hero-name-row">${p.avatar_url && urlCache[p.avatar_url] ? `<img class="hero-avatar" src="${urlCache[p.avatar_url]}" style="border-color:${p.border_color || 'var(--accent)'}">` : ''}<h2>${esc(p.name)}</h2></div>
+  <div style="margin-top:6px">${esc(p.emoji)} ${esc(p.status)}</div>
+  <div class="muted" style="margin-top:4px"><span class="dot ${online(p) ? 'on' : ''}"></span>${online(p) ? 'Online now' : 'Last seen ' + new Date(p.last_seen).toLocaleString()}</div>`;
+const opts = (list, cur) => list.map(([v, n]) => `<option value="${esc(v)}" ${cur === v ? 'selected' : ''}>${n}</option>`).join('');
+const views = {
+  home: (m, th) => `<div class="card hero">${heroTitle(partner())}</div>
     <div class="card"><b>Your status</b>
-      <div class="chips" style="margin-top:8px">${presets.map(x => `<button class="${x === mine.emoji + ' ' + mine.status ? '' : 'ghost'}" data-preset="${esc(x)}">${esc(x)}</button>`).join('')}
-        ${adding ? '' : '<button class="ghost" id="addbtn">+ Add status</button>'}</div>
+      <div class="chips" style="margin-top:8px">${(th.presets || defPresets).map(x => `<button class="${x === m.emoji + ' ' + m.status ? '' : 'ghost'}" data-preset="${esc(x)}">${esc(x)}</button>`).join('')}${adding ? '' : '<button class="ghost" id="addbtn">+ Add status</button>'}</div>
       ${adding ? `<div class="row"><input id="ne" style="max-width:64px" placeholder="😀" aria-label="Emoji"><input id="nx" placeholder="Status name" aria-label="Status name"></div>
         <div class="row" style="margin-top:6px"><button id="addok">Add and use</button><button class="ghost" id="canc">Cancel</button></div>
-        <div id="aerr" class="muted"></div>` : ''}</div>`;
-  if (tab === 'notes') {
-    const correspondent = partner(), name = correspondent?.name || 'Your partner';
-    const avatar = correspondent?.avatar_url ? urlCache[correspondent.avatar_url] : '';
-    body = `<section class="messages" aria-label="Messages">
-      <header class="messages-head">
-        ${avatar ? `<img class="messages-avatar" src="${esc(avatar)}" alt="${esc(name)}">` : '<div class="messages-avatar messages-avatar-fallback" aria-hidden="true">👤</div>'}
-        <div class="messages-title ${online(correspondent) ? 'online' : ''}">${esc(name)}</div>
-      </header>
-      <div class="messages-list" id="note-list" aria-live="polite">
-        ${notes.length ? notes.map(n => `<article class="message ${n.from_id === me ? 'me' : ''}">
-          <div>${esc(n.text)}</div>
-          ${n.created_at ? `<div class="message-time">${esc(new Date(n.created_at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}))}</div>` : ''}
-        </article>`).join('') : '<p class="messages-empty">This is the beginning of your conversation.<br>Send a little note to say hello.</p>'}
-      </div>
+        <div id="aerr" class="muted"></div>` : ''}</div>`,
+  notes(){
+    const who = partner(), name = who?.name || 'Your partner', av = who?.avatar_url ? urlCache[who.avatar_url] : '';
+    return `<section class="messages" aria-label="Messages">
+      <header class="messages-head">${av ? `<img class="messages-avatar" src="${esc(av)}" alt="${esc(name)}">` : '<div class="messages-avatar messages-avatar-fallback" aria-hidden="true">👤</div>'}
+        <div class="messages-title gl ${online(who) ? 'online' : ''}"><span>${esc(name)}</span></div></header>
+      <div class="messages-list" id="note-list" aria-live="polite">${notes.length ? notes.map(n => `<article class="message ${n.from_id === me ? 'me' : ''}"><div>${esc(n.text)}</div>${n.created_at ? `<div class="message-time">${esc(new Date(n.created_at).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'}))}</div>` : ''}</article>`).join('')
+        : '<p class="messages-empty">This is the beginning of your conversation.<br>Send a little note to say hello.</p>'}</div>
     </section>
-    <div class="message-composer">
-      <input id="nt" placeholder="Message" aria-label="Write a message" autocomplete="off">
-      <button id="send" aria-label="Send message" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
-    </div>`;
-  }
-  if (tab === 'photos') body = `<div class="card"><div class="row" style="align-items:center"><button id="padd">+ Add photos</button>
+    <div class="message-composer gl"><input id="nt" placeholder="Message" aria-label="Write a message" autocomplete="off">
+      <button id="send" aria-label="Send message" title="Send"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div>`;
+  },
+  photos: () => `<div class="card"><div class="row" style="align-items:center"><button id="padd">+ Add photos</button>
     <input id="pf" type="file" accept="image/*" multiple hidden><span id="pmsg" class="muted"></span></div>
     ${photoErr ? `<p class="muted">Photos aren't set up yet. Run update2.sql in Supabase. (${esc(photoErr)})</p>` : ''}
     ${photos.length ? `<div class="grid">${photos.map(x => `<div data-ph="${x.id}"><img loading="lazy" src="${urlCache[x.path] || ''}" alt=""></div>`).join('')}</div>`
-      : (photoErr ? '' : '<p class="muted">No photos yet. Add the first one.</p>')}</div>`;
-  if (tab === 'settings') {
-    const th = mine.theme || {}, g = th.global || {on: !!(th.bg && th.bg.toLowerCase() !== '#f2effa'), type: 'color'};
-    const navScale = Math.round(Math.min(1.2, Math.max(.8, Number(th.navScale) || 1)) * 100);
-    body = `<div class="card"><h3 style="margin-top:0">You</h3>
+      : (photoErr ? '' : '<p class="muted">No photos yet. Add the first one.</p>')}</div>`,
+  settings(m, th){
+    const g = glob(th), pct = Math.round(clamp(Number(th.navScale) || 1, .8, 1.2) * 100);
+    return `<div class="card"><h3 style="margin-top:0">You</h3>
     <label>Accent color<input id="ac" type="color" value="${th.accent || '#e0457b'}"></label>
-    <label>Font<select id="ft">${[['Rounded','ui-rounded, system-ui, sans-serif'],['Serif','Georgia, serif'],['Mono','ui-monospace, monospace'],['Handwritten','"Bradley Hand", "Comic Sans MS", cursive']]
-      .map(([n, v]) => `<option value="${esc(v)}" ${th.font === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
-    <label>Mobile menu bar size <span id="navScaleValue" class="muted">${navScale}%</span><input id="navScale" type="range" min="80" max="120" step="1" value="${navScale}" aria-label="Mobile menu bar size"></label>
+    <label>Font<select id="ft">${opts([['ui-rounded, system-ui, sans-serif', 'Rounded'], ['Georgia, serif', 'Serif'], ['ui-monospace, monospace', 'Mono'], ['"Bradley Hand", "Comic Sans MS", cursive', 'Handwritten']], th.font)}</select></label>
+    <label>Mobile menu bar size <span id="navScaleValue" class="muted">${pct}%</span><input id="navScale" type="range" min="80" max="120" step="1" value="${pct}" aria-label="Mobile menu bar size"></label>
     <h3>Global settings</h3>
     <label class="chk"><input type="checkbox" id="gon" ${g.on ? 'checked' : ''}>Use my custom background</label>
-    <label>Background type<select id="gt">${[['color','Color'],['image','Image'],['video','Looped video']]
-      .map(([v, n]) => `<option value="${v}" ${g.type === v ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+    <label>Background type<select id="gt">${opts([['color', 'Color'], ['image', 'Image'], ['video', 'Looped video']], g.type)}</select></label>
     <div id="gcolor" style="display:${g.type === 'color' ? 'block' : 'none'}"><label>Color<input id="bgc" type="color" value="${th.bg || '#f2effa'}"></label></div>
     <div id="gfile" style="display:${g.type === 'color' ? 'none' : 'block'}"><button class="ghost" id="gup" style="margin-top:8px">${g.path ? 'Replace file' : 'Upload file'}</button>
       <input id="gf" type="file" hidden accept="${g.type === 'video' ? 'video/*' : 'image/*'}"> <span id="gmsg" class="muted">${g.path ? 'File saved' : ''}</span></div>
     <div class="row" style="margin-top:16px;flex-wrap:wrap"><button id="sv">Save settings</button>
       <button class="ghost" id="nf">${notifOn() ? 'Disable notifications' : 'Enable notifications'}</button><button class="ghost" id="out">Sign out</button></div></div>`;
   }
-
-  const vp = photos.find(x => x.id === viewing);
-  app.innerHTML = body + (vp ? `<div id="lb"><img src="${urlCache[vp.path] || ''}" alt=""><div class="row"><button class="ghost" id="lbx">Close</button>${vp.owner === me ? '<button id="lbd">Delete</button>' : ''}</div></div>` : '');
+};
+function render(){
+  const act = document.activeElement?.id, keep = {};
+  ['nt', 'ne', 'nx'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
+  const m = people[me] || {}, vp = photos.find(x => x.id === viewing);
+  document.body.classList.toggle('min', collapsed);
+  buildNav(); killViewGlass();
+  app.innerHTML = views[tab](m, m.theme || {}) + (vp ? `<div id="lb"><img src="${urlCache[vp.path] || ''}" alt=""><div class="row"><button class="ghost" id="lbx">Close</button>${vp.owner === me ? '<button id="lbd">Delete</button>' : ''}</div></div>` : '');
   Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
   if (keep[act] !== undefined) $('#' + act)?.focus();
-  const on = (id, fn) => $(id) && ($(id).onclick = fn);
-  if ($('#navScale')) $('#navScale').oninput = e => {
-    const value = Number(e.target.value);
-    const scale = value / 100;
-    document.documentElement.style.setProperty('--nav-scale', String(scale));
-    document.documentElement.style.setProperty('--nav-scale-inverse', String(1 / scale));
-    $('#navScaleValue').textContent = value + '%';
-    syncMessageComposerPosition();
-  };
-  requestAnimationFrame(() => { lgSync(); initLiquidGlass(); });
-  if (tab === 'notes') requestAnimationFrame(() => { const list = $('#note-list'); if (list) list.scrollTop = list.scrollHeight; });
-  on('#tgl', () => { collapsed = !collapsed; ls.set('nav', collapsed ? 'min' : 'max'); render(); });
+  requestAnimationFrame(() => {
+    lgSync(); initLiquidGlass(); initViewGlass();
+    const list = $('#note-list'); if (list) list.scrollTop = list.scrollHeight;
+  });
+}
 
-  app.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => {
-    const [e, ...rest] = b.dataset.preset.split(' ');
-    save({emoji: e, status: rest.join(' ')}); });
-  on('#addbtn', () => { adding = true; render(); $('#ne')?.focus(); });
-  on('#canc', () => { adding = false; render(); });
-  on('#addok', async () => {
-    const g = seg($('#ne').value), em = g.length === 1 && isEmoji(g[0]) ? g[0] : '', tx = $('#nx').value.trim(), err = $('#aerr');
+/* ===== events (delegated, bound once) ===== */
+const actions = {
+  addbtn(){ adding = true; render(); $('#ne')?.focus(); },
+  canc(){ adding = false; render(); },
+  async addok(){
+    const m = people[me], presets = m.theme?.presets || defPresets, err = $('#aerr');
+    const g = seg($('#ne').value), em = g.length === 1 && isEmoji(g[0]) ? g[0] : '', tx = $('#nx').value.trim();
     if (!em) { err.textContent = 'Enter exactly one emoji.'; return; }
     if (!tx) { err.textContent = 'Enter a name for the status.'; return; }
     if (presets.some(x => emojiKey(x) === emojiKey(em))) { err.textContent = em + ' is already used. Pick a different emoji.'; return; }
     adding = false;
-    await save({emoji: em, status: tx, theme: {...(mine.theme || {}), presets: [...presets, em + ' ' + tx]}});
-  });
-  on('#send', async () => {
+    await save({emoji: em, status: tx, theme: {...(m.theme || {}), presets: [...presets, em + ' ' + tx]}});
+  },
+  async send(){
     const t = $('#nt').value.trim(); if (!t) return;
     const { data, error } = await sb.from('notes').insert({text: t}).select().single();
     if (error) { toast('Could not send: ' + error.message); return; }
     $('#nt').value = '';
     if (!notes.some(x => x.id === data.id)) notes.push(data);
     render();
-  });
-  on('#padd', () => $('#pf').click());
-  if ($('#pf')) $('#pf').onchange = async () => {
-    const files = [...$('#pf').files];
-    for (let i = 0; i < files.length; i++) {
-      $('#pmsg') && ($('#pmsg').textContent = `Uploading ${i + 1} of ${files.length}...`);
-      const path = await upload(files[i], 'photos'); if (!path) continue;
-      const { data, error } = await sb.from('photos').insert({path}).select().single();
-      if (error) { toast('Could not save photo: ' + error.message); continue; }
-      await signed([path]); if (!photos.some(x => x.id === data.id)) photos.unshift(data);
-    }
-    render();
-  };
-  app.querySelectorAll('[data-ph]').forEach(el => el.onclick = () => { viewing = +el.dataset.ph; render(); });
-  on('#lbx', () => { viewing = null; render(); });
-  on('#lbd', async () => {
+  },
+  padd: () => $('#pf').click(),
+  lbx(){ viewing = null; render(); },
+  async lbd(){
     const ph = photos.find(x => x.id === viewing); if (!ph || !confirm('Delete this photo?')) return;
     const { error } = await sb.from('photos').delete().eq('id', ph.id);
     if (error) { toast('Could not delete: ' + error.message); return; }
     await sb.storage.from('media').remove([ph.path]);
     photos = photos.filter(x => x.id !== ph.id); viewing = null; render();
-  });
-  on('#gup', () => $('#gf').click());
-  if ($('#gt')) $('#gt').onchange = () => {
-    const v = $('#gt').value;
-    $('#gcolor').style.display = v === 'color' ? 'block' : 'none';
-    $('#gfile').style.display = v === 'color' ? 'none' : 'block';
-    $('#gf').accept = v === 'video' ? 'video/*' : 'image/*';
-  };
-  if ($('#gf')) $('#gf').onchange = async () => {
-    const f = $('#gf').files[0]; if (!f) return;
-    $('#gmsg').textContent = 'Uploading...';
-    const path = await upload(f, 'bg'); if (!path) { $('#gmsg').textContent = 'Upload failed'; return; }
-    const th = mine.theme || {};
-    await save({theme: {...th, global: {...(th.global || {}), on: true, type: f.type.startsWith('video') ? 'video' : 'image', path}}});
-  };
-  on('#sv', async () => {
-    const th = mine.theme || {}, g = th.global || {};
-    if (await save({theme: {...th, accent: $('#ac').value, font: $('#ft').value, bg: $('#bgc').value,
-      navScale: Number($('#navScale').value) / 100,
-      global: {...g, on: $('#gon').checked, type: $('#gt').value}}})) toast('Settings saved');
-  });
-  on('#nf', async () => {
+  },
+  gup: () => $('#gf').click(),
+  async sv(){
+    const th = people[me].theme || {};
+    if (await save({theme: {...th, accent: $('#ac').value, font: $('#ft').value, bg: $('#bgc').value, navScale: Number($('#navScale').value) / 100,
+      global: {...(th.global || {}), on: $('#gon').checked, type: $('#gt').value}}})) toast('Settings saved');
+  },
+  async nf(){
     if (!('Notification' in window)) toast('Add the app to your Home Screen first, then try again.');
     else if (notifOn()) { ls.set('notif', 'off'); toast('Notifications off on this device'); }
     else if (Notification.permission === 'granted') { ls.set('notif', 'on'); toast('Notifications on'); }
     else if ((await Notification.requestPermission()) === 'granted') { ls.set('notif', 'on'); toast('Notifications on'); }
     else toast('Notifications blocked. Allow them in your device settings.');
     render();
-  });
-  on('#out', async () => { await sb.auth.signOut(); location.reload(); });
-}
+  },
+  async out(){ await sb.auth.signOut(); location.reload(); }
+};
+const changes = {
+  async pf(){
+    const files = [...$('#pf').files];
+    for (const [i, f] of files.entries()) {
+      const msg = $('#pmsg'); if (msg) msg.textContent = `Uploading ${i + 1} of ${files.length}...`;
+      const path = await upload(f, 'photos'); if (!path) continue;
+      const { data, error } = await sb.from('photos').insert({path}).select().single();
+      if (error) { toast('Could not save photo: ' + error.message); continue; }
+      await signed([path]); if (!photos.some(x => x.id === data.id)) photos.unshift(data);
+    }
+    render();
+  },
+  gt(){
+    const v = $('#gt').value;
+    $('#gcolor').style.display = v === 'color' ? 'block' : 'none';
+    $('#gfile').style.display = v === 'color' ? 'none' : 'block';
+    $('#gf').accept = v === 'video' ? 'video/*' : 'image/*';
+  },
+  async gf(){
+    const f = $('#gf').files[0]; if (!f) return;
+    $('#gmsg').textContent = 'Uploading...';
+    const path = await upload(f, 'bg'); if (!path) { $('#gmsg').textContent = 'Upload failed'; return; }
+    const th = people[me].theme || {};
+    await save({theme: {...th, global: {...(th.global || {}), on: true, type: f.type.startsWith('video') ? 'video' : 'image', path}}});
+  }
+};
+app.addEventListener('click', e => {
+  const b = e.target.closest('[data-preset],[data-ph],button[id]'); if (!b) return;
+  if (b.dataset.preset) { const [emoji, ...rest] = b.dataset.preset.split(' '); save({emoji, status: rest.join(' ')}); }
+  else if (b.dataset.ph) { viewing = +b.dataset.ph; render(); }
+  else actions[b.id]?.();
+});
+app.addEventListener('change', e => changes[e.target.id]?.());
+app.addEventListener('input', e => {
+  if (e.target.id !== 'navScale') return;
+  setNavScale(e.target.value / 100); $('#navScaleValue').textContent = e.target.value + '%';
+});
+
+/* iOS interactive glass: the highlight lands where the finger lands, the control springs down (CSS) */
+addEventListener('pointerdown', e => {
+  const el = e.target.closest('button:not(.ni):not(.tgl),.message-composer'); if (!el) return;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty('--gx', e.clientX - r.left + 'px'); el.style.setProperty('--gy', e.clientY - r.top + 'px');
+  el.classList.add('pressed');
+  const off = () => { el.classList.remove('pressed'); removeEventListener('pointerup', off); removeEventListener('pointercancel', off); };
+  addEventListener('pointerup', off); addEventListener('pointercancel', off);
+});
+
 function showErr(e){
   app.innerHTML = `<div class="card"><b>Something went wrong</b><p>${esc(e && (e.message || e.reason || e))}</p><button id="retry">Back to sign in</button></div>`;
   $('#retry').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 }
 addEventListener('unhandledrejection', ev => showErr(ev.reason));
 addEventListener('error', ev => showErr(ev.error || ev.message));
-initNav();
-applyTheme();
-boot().catch(showErr);
+initNav(); applyTheme(); boot().catch(showErr);
 </script></body></html>

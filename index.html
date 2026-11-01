@@ -62,7 +62,7 @@ button.ghost{color:var(--ink)}
 .reply-preview span{opacity:.65;margin-top:2px}
 .reply-preview button{width:28px;height:28px;padding:0;flex:none;background:#ffffff1b;box-shadow:none}
 .messages-empty{margin:auto 0;text-align:center;padding:24px 18px;opacity:.58}
-.message-composer{--b:18px;position:fixed;z-index:4;left:50%;bottom:calc(env(safe-area-inset-bottom) + var(--message-composer-bottom,82px));translate:-50% 0;width:min(560px,calc(100% - 28px));display:flex;align-items:center;gap:8px;padding:7px 8px 7px 14px;background:color-mix(in srgb,var(--card) 68%,transparent);box-shadow:0 8px 24px #00000018,inset 0 1px 0 #ffffff80}
+.message-composer{--b:18px;position:fixed;z-index:4;left:50%;bottom:calc(env(safe-area-inset-bottom) + var(--message-composer-bottom,82px));translate:-50% 0;width:min(560px,calc(100% - 28px));display:flex;align-items:center;gap:8px;padding:7px 8px 7px 14px;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.05) 48%,rgba(0,0,0,.12)),linear-gradient(rgba(0,0,0,var(--glass-shade,.09)),rgba(0,0,0,var(--glass-shade,.09))),color-mix(in srgb,var(--glass-base) 92%,var(--accent) 8%);-webkit-backdrop-filter:blur(calc(var(--glass-blur,20px) * .45)) saturate(190%) brightness(1.12);backdrop-filter:blur(calc(var(--glass-blur,20px) * .45)) saturate(190%) brightness(1.12);border:1px solid rgba(255,255,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.52),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 -8px 16px rgba(0,0,0,.12),0 3px 10px rgba(0,0,0,.1)}
 .message-composer input{min-width:0;margin:0;padding:7px 0;border:0;background:transparent;outline:none}
 .message-composer button{width:36px;height:36px;flex:none;display:grid;place-items:center;padding:0;box-shadow:0 2px 7px color-mix(in srgb,var(--accent) 35%,transparent)}
 .message-composer .ico{width:19px;height:19px;stroke-width:2.2}
@@ -71,7 +71,8 @@ button.ghost{color:var(--ink)}
 :root{--rim:linear-gradient(135deg,#fffffff0,#ffffff14 30%,#ffffff0a 62%,#ffffffd0);--glass-bg:linear-gradient(rgba(0,0,0,var(--glass-shade,.015)),rgba(0,0,0,var(--glass-shade,.015))),color-mix(in srgb,var(--card) var(--glass-a,58%),transparent)}
 #bg{background:radial-gradient(55% 38% at 12% 6%,color-mix(in srgb,var(--accent) 42%,transparent),transparent 72%),radial-gradient(60% 42% at 92% 78%,color-mix(in srgb,#6f7dff 32%,transparent),transparent 72%),radial-gradient(50% 36% at 30% 100%,color-mix(in srgb,#ffb36b 22%,transparent),transparent 72%)}
 body.media #bg{background:none}
-.card,button.ghost,.messages-title,.message-composer,.message:not(.me){background:var(--glass-bg);-webkit-backdrop-filter:blur(var(--glass-blur,20px)) saturate(var(--glass-sat,190%)) brightness(1.05);backdrop-filter:blur(var(--glass-blur,20px)) saturate(var(--glass-sat,190%)) brightness(1.05);border:1px solid #ffffff38;box-shadow:0 10px 30px #00000024,0 1px 4px #0000000f,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff2e,inset 0 0 20px #ffffff14}
+.card,button.ghost,.messages-title,.message:not(.me){background:var(--glass-bg);-webkit-backdrop-filter:blur(var(--glass-blur,20px)) saturate(var(--glass-sat,190%)) brightness(1.05);backdrop-filter:blur(var(--glass-blur,20px)) saturate(var(--glass-sat,190%)) brightness(1.05);border:1px solid #ffffff38;box-shadow:0 10px 30px #00000024,0 1px 4px #0000000f,inset 0 1px 0 #ffffffb3,inset 0 -1px 0 #ffffff2e,inset 0 0 20px #ffffff14}
+.message-composer::before{background:linear-gradient(135deg,#ffffffe0,#ffffff20 38%,#ffffff0a 68%,#ffffffb8);opacity:1}
 .card,.message{position:relative}
 .card::before,button.ghost::before,.messages-title::before,.message-composer::before,.message:not(.me)::before,#toast::before,button:not(.ni,.tgl,.ghost)::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--rim);opacity:.8;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
@@ -82,10 +83,7 @@ button:not(.ni,.tgl)::after,.message-composer::after{content:"";position:absolut
 button:not(.ni,.tgl).pressed::after,.message-composer.pressed::after{opacity:1}
 #toast{background:color-mix(in srgb,var(--accent) 72%,transparent);-webkit-backdrop-filter:blur(var(--glass-blur,20px)) saturate(var(--glass-sat,190%));backdrop-filter:blur(var(--glass-blur,20px)) saturate(var(--glass-sat,190%));border:1px solid #ffffff4d;box-shadow:0 10px 30px #0003,inset 0 1px 0 #ffffff80;animation:toastIn .6s var(--spring)}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-24px) scale(.9)}}
-.gl{position:relative}
-.message-composer.liquid-glass-ready{pointer-events:auto!important;transition:none!important;background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-.message-composer.liquid-glass-ready>*{position:relative;z-index:2}
-#app .message-composer canvas{pointer-events:none!important}
+.gl:not(.message-composer){position:relative}
 /* tint slider: a glass track with 5 notches, no numbers */
 .tint{position:relative;height:34px;margin-top:8px}
 .tint input{position:absolute;inset:0;width:100%;height:34px;margin:0;padding:0;border:0;background:transparent;-webkit-appearance:none;appearance:none;z-index:2}
@@ -159,7 +157,7 @@ body.nonav #nav{display:none}
     scale:calc(1 / (1 + (var(--sheet-x,1) - 1) * var(--lock,0))) calc(1 / (1 + (var(--sheet-y,1) - 1) * var(--lock,0)));
     padding:0 27px;margin:0 calc(var(--p,0) * 14px) calc(var(--p,0) * 14px);border-radius:36px;
     background:rgba(255,255,255,calc(var(--p,0) * .06));border:1px solid rgba(255,255,255,calc(var(--p,0) * .14));box-shadow:inset 0 1px 0 rgba(255,255,255,calc(var(--p,0) * .12))}
-  #nav .ni{flex:1;min-width:0;height:49px;justify-content:center;gap:2px;padding:0;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.01em;white-space:nowrap;position:relative;z-index:2;opacity:1;transition:color .2s,opacity .2s}
+  #nav .ni{flex:1;min-width:0;height:49px;justify-content:center;gap:0;padding:0;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.01em;white-space:nowrap;position:relative;z-index:2;opacity:1;transition:color .2s,opacity .2s}
   #nav .ni .ico{width:27px;height:27px;stroke-width:2;transition:transform .35s var(--spring)}
   #nav .ni.on .ico,#nav .ni.hot .ico{transform:scale(1.1)}
   #nav .ni.hot{color:var(--accent);opacity:1}
@@ -188,6 +186,7 @@ body.nonav #nav{display:none}
     transition:background .22s,border-color .22s,box-shadow .22s}
   #nav .glass-indicator.liquid-glass-ready{position:absolute!important;opacity:1!important;pointer-events:none!important;transition:none!important;overflow:hidden;background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-color:transparent!important;box-shadow:none!important}
   #nav .glass-indicator canvas{pointer-events:none!important}
+  #nav .glass-indicator.liquid-glass-ready::before,#nav .glass-indicator.liquid-glass-ready::after{display:none}
   #nav .glass-indicator::after{content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .22s ease;
     background:radial-gradient(90px 48px at var(--lx,50%) 0%,rgba(255,255,255,.32),transparent 72%),linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.06) 52%,rgba(255,255,255,.12))}
   #nav .glass-indicator::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
@@ -239,7 +238,7 @@ body.nonav #nav{display:none}
   .messages-head{position:absolute;top:calc(env(safe-area-inset-top) + 8px);left:0;right:0;padding:0;pointer-events:none}
   .messages-head>*{pointer-events:auto}
   .messages-list{position:absolute;inset:0;display:flex;flex-direction:column;gap:7px;overflow-y:auto;overscroll-behavior:contain;
-    padding:calc(env(safe-area-inset-top) + 118px) 7px calc(env(safe-area-inset-bottom) + 172px);scrollbar-width:none}
+    padding:calc(env(safe-area-inset-top) + 118px) 7px calc(env(safe-area-inset-bottom) + var(--messages-bottom-space,172px));scrollbar-width:none}
   .messages-list::-webkit-scrollbar{display:none}
   .message{max-width:min(84%,390px);padding:9px 12px}
   .message:not(.me){margin-left:0}
@@ -259,6 +258,21 @@ body.nonav #nav{display:none}
   .message-composer{bottom:24px}
 }
 @media(max-width:767px){
+
+  .message-composer{
+    border-radius:39px;
+    background:linear-gradient(rgba(0,0,0,var(--glass-shade,.09)),rgba(0,0,0,var(--glass-shade,.09))),rgba(18,18,24,.16);
+    -webkit-backdrop-filter:blur(calc(var(--glass-blur,20px) * 1.05)) saturate(155%);
+    backdrop-filter:blur(calc(var(--glass-blur,20px) * 1.05)) saturate(155%);
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:0 12px 32px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.08),
+      inset 0 1px 0 rgba(255,255,255,.70),inset 0 -1px 0 rgba(255,255,255,.20),inset 0 0 22px rgba(255,255,255,.15);
+  }
+  .message-composer::before{
+    z-index:0;opacity:1;
+    background:linear-gradient(135deg,#fffffff2,#ffffff14 28%,#ffffff0a 62%,#ffffffd9);
+  }
+  .message-composer>*{position:relative;z-index:1}
 
   #nav::after{
     background:radial-gradient(70px 48px at var(--lx,50%) 50%,rgba(255,255,255,.16),transparent 70%);
@@ -429,7 +443,7 @@ body.nonav #nav{display:none}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <script>
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 if (MAINTENANCE_MODE) document.body.classList.add('maintenance-mode');
 const sb = supabase.createClient('https://vffhgnflcrlddodldprn.supabase.co', 'sb_publishable_ucjyfX7n8IKT5TtUyGZVUw_VKeqjj3L');
 const $ = (s, r = document) => r.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -481,17 +495,35 @@ async function upload(f, folder){
 }
 async function setBg(g){
   const el = $('#bg'), key = g ? g.type + g.path : '';
+  const generation = ++bgGeneration;
   if (el.dataset.k === key) return;
-  el.dataset.k = key; el.innerHTML = ''; document.body.classList.toggle('media', !!g);
+  el.dataset.k = key; el.innerHTML = ''; document.body.classList.remove('media');
   if (!g) return;
-  const u = (await signed([g.path]))[g.path];
-  if (!u) { el.dataset.k = ''; return; }
-  el.innerHTML = g.type === 'video' ? `<video src="${u}" autoplay loop muted playsinline></video>` : `<img src="${u}" alt="">`;
+  try {
+    const u = (await signed([g.path]))[g.path];
+    if (generation !== bgGeneration) return;
+    if (!u) throw new Error(`No accessible URL was returned for conversation background "${g.path}".`);
+    document.body.classList.add('media');
+    el.innerHTML = g.type === 'video' ? `<video src="${u}" autoplay loop muted playsinline></video>` : `<img src="${u}" alt="">`;
+  } catch (e) {
+    if (generation === bgGeneration) { el.dataset.k = ''; el.innerHTML = ''; document.body.classList.remove('media'); }
+    throw e;
+  }
 
 }
-function syncBg(){   // the custom background belongs to the Messages screen only
-  const c = people[me]?.theme?.chatBg;
-  setBg(tab === 'notes' && c?.path ? {type: c.type || 'image', path: c.path} : null);
+function latestChatBg(){
+  const choices = Object.entries(people).flatMap(([id, profile]) => {
+    const background = profile.theme?.chatBg;
+    if (!background) return [];
+    const updatedAt = Date.parse(background.updatedAt || '');
+    return [{id, background, updatedAt: Number.isFinite(updatedAt) ? updatedAt : 0}];
+  }).sort((a, b) => a.updatedAt - b.updatedAt || a.id.localeCompare(b.id));
+  return choices.length ? choices[choices.length - 1].background : null;
+}
+function syncBg(){
+  const c = latestChatBg();
+  setBg(tab === 'notes' && c?.path ? {type: c.type || 'image', path: c.path} : null)
+    .catch(e => { console.warn('The shared conversation background could not be loaded.', e); toast('Could not load the shared conversation background. Check media access permissions.'); });
 }
 function setNavScale(v){
   navK = clamp(Number(v) || 1, .8, 1.2);
@@ -550,6 +582,7 @@ async function boot(){
         const nm = dispName(p); toast(`${nm} ${text}`, {title: nm, body: text});
       }
       if (p.id === me) applyTheme();
+      else if (JSON.stringify(old?.theme?.chatBg) !== JSON.stringify(p.theme?.chatBg)) syncBg();
       const same = old && fields.every(f => JSON.stringify(old[f]) === JSON.stringify(p[f]));
       if (tab === 'settings' && (same || p.id !== me)) return;
       if (!(same && /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))) render();
@@ -572,7 +605,6 @@ async function boot(){
 function login(){
   document.body.classList.add('nonav'); nav.innerHTML = '';
   killSelectorLens();
-  killViewGlass();
   app.innerHTML = `<div class="card gl"><h2>Us</h2>
     <input id="em" type="email" placeholder="Email" autocomplete="username">
     <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
@@ -591,7 +623,7 @@ const DEFAULT_FROST = .85;
 const FROST_STEPS = [0, .35, .85, 1.6, 2.6];
 const frostBase = () => DEFAULT_FROST + FROST_STEPS[Math.round(tintT * 4)];
 const glassTintAlpha = () => .02 + .14 * tintT;
-let viewGlass = null, viewGlassLoad = null, viewGlassGeneration = 0;
+let bgGeneration = 0;
 let lensGlass = null, lensGlassLoad = null, lensGlassGeneration = 0, glModP = null;
 const loadGL = () => glModP ||= import('https://cdn.jsdelivr.net/npm/liquid-gl@3.0.0/liquidGL.js').then(m => m.default);
 const glassTint = () => `rgba(0,0,0,${glassTintAlpha().toFixed(3)})`;
@@ -622,38 +654,10 @@ function initSelectorLens(){
     .finally(() => { if (lensGlassLoad === load) lensGlassLoad = null; });
   lensGlassLoad = load;
 }
-const killViewGlass = () => {
-  viewGlassGeneration++;
-  viewGlass?.destroy?.();
-  viewGlass = viewGlassLoad = null;
-  $$('#app .message-composer').forEach(el => el.classList.remove('liquid-glass-ready'));
-};
 function setGlassTint(){
-  [viewGlass, lensGlass].forEach(g => {
-    if (typeof g?.setTint === 'function') g.setTint(glassTint());
-    else if (g?.options) g.options.tint = glassTint();
-    if (g?.options) g.options.frost = frostBase();
-  });
-}
-function initViewGlass(){
-  const target = $('#app .message-composer');
-  if (!target || viewGlass || viewGlassLoad) return;
-  const generation = viewGlassGeneration;
-  const load = loadGL().then(liquidGL => {
-    if (generation !== viewGlassGeneration || !target.isConnected) return;
-    viewGlass = liquidGL({
-      target: '#app .message-composer', snapshot: 'body', engine: 'auto', zIndex: 1, resolution: 1,
-      refraction: .014, aberration: .008, bevelDepth: .06, bevelWidth: .12, frost: frostBase(), shadow: true, specular: true,
-      reveal: 'none', tilt: false, interaction: 'fluid', interactionStrength: .25, interactionRadius: .5, interactionViscosity: .72, tint: glassTint(),
-      on: {init(g){
-        if (generation !== viewGlassGeneration || !target.isConnected) return g?.destroy();
-        target.classList.add('liquid-glass-ready');
-        $$('#app .message-composer canvas').forEach(c => c.style.setProperty('pointer-events', 'none', 'important'));
-      }}
-    });
-  }).catch(e => console.warn('LiquidGL (message composer) could not load; using the CSS glass fallback.', e))
-    .finally(() => { if (viewGlassLoad === load) viewGlassLoad = null; });
-  viewGlassLoad = load;
+  if (typeof lensGlass?.setTint === 'function') lensGlass.setTint(glassTint());
+  else if (lensGlass?.options) lensGlass.options.tint = glassTint();
+  if (lensGlass?.options) lensGlass.options.frost = frostBase();
 }
 function setMotion(){   // lens stretch x sheet stretch, one writer for the nav's scale; --sheet-x/y lets the inner bar cancel the sheet part
   nav.style.setProperty('--nav-motion-x', (lg.kx * mn.sx).toFixed(4)); nav.style.setProperty('--nav-motion-y', (lg.ky * mn.sy).toFixed(4));
@@ -774,8 +778,15 @@ document.addEventListener('pointerdown', e => { if (expandedMenu && !e.target.cl
 /* ===== nav: build, drawer, input ===== */
 function syncComposer(){
   if (isDesk() || document.body.classList.contains('nonav')) return;
-  const h = nav.offsetHeight * navK;   // layout height, so it tracks the morph without the stretch jitter
-  rootStyle.setProperty('--nav-h', h + 'px'); rootStyle.setProperty('--message-composer-bottom', h + 16 + 'px');
+  const h = nav.getBoundingClientRect().height;
+  const composerBottom = 8 + h + 12;
+  const composer = $('#app .message-composer'), composerHeight = composer?.offsetHeight || 52;
+  const lists = [$('#note-list'), $('#thread-list')].filter(Boolean);
+  const pinned = lists.filter(list => list.scrollHeight - list.scrollTop - list.clientHeight < 2);
+  rootStyle.setProperty('--nav-h', h + 'px');
+  rootStyle.setProperty('--message-composer-bottom', composerBottom + 'px');
+  rootStyle.setProperty('--messages-bottom-space', Math.max(172, composerBottom + composerHeight + 16) + 'px');
+  pinned.forEach(list => { list.scrollTop = list.scrollHeight; });
 }
 function syncTabs(){
   navItems().forEach(b => {
@@ -1027,9 +1038,9 @@ const views = {
         <div class="row" style="margin-top:6px"><button id="addok">Add and use</button><button class="ghost" id="canc">Cancel</button></div>
         <div id="aerr" class="muted"></div>` : ''}</div>`,
   notes(){
-    const who = partner(), name = dispName(who), av = who?.avatar_url ? urlCache[who.avatar_url] : '', th = people[me]?.theme || {}, cb = th.chatBg || {};
+    const who = partner(), name = dispName(who), av = who?.avatar_url ? urlCache[who.avatar_url] : '', border = who?.border_color || 'var(--accent)', th = people[me]?.theme || {}, cb = latestChatBg() || {};
     return `<section class="messages" aria-label="Messages">
-      <header class="messages-head">${av ? `<img class="messages-avatar" src="${esc(av)}" alt="${esc(name)}">` : '<div class="messages-avatar messages-avatar-fallback" aria-hidden="true">👤</div>'}
+      <header class="messages-head">${av ? `<img class="messages-avatar" src="${esc(av)}" alt="${esc(name)}" style="border-color:${esc(border)}">` : `<div class="messages-avatar messages-avatar-fallback" style="border-color:${esc(border)}" aria-hidden="true">👤</div>`}
         <div class="contact-wrap"><div class="messages-title gl ${online(who) ? 'online' : ''}${contactOpen ? ' open' : ''}" id="contact">
           <div class="contact-head" role="button" tabindex="0" data-contact aria-expanded="${contactOpen}"><span>${esc(name)}</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
           <div class="contact-body"><div class="contact-inner">
@@ -1072,14 +1083,13 @@ function render(){
   ['nt', 'ne', 'nx', 'cn-them', 'cn-me'].forEach(id => { const el = $('#' + id); if (el) keep[id] = el.value; });
   const m = people[me] || {}, vp = photos.find(x => x.id === viewing);
   document.body.classList.toggle('min', collapsed);
-  buildNav(); killViewGlass(); buildLinks();
+  buildNav(); buildLinks();
   app.innerHTML = views[tab](m, m.theme || {}) + (vp ? `...unchanged...` : '') + (threadId && tab === 'notes' ? threadHtml() : '');
     const nl1 = $('#note-list'); if (nl1 && !atBottom) nl1.scrollTop = prevTop;
   sizeContact(); syncReply();
   Object.entries(keep).forEach(([id, v]) => { const el = $('#' + id); if (el) el.value = v; });
   if (keep[act] !== undefined) $('#' + act)?.focus();
   requestAnimationFrame(() => {
-    initViewGlass();
     const list = $('#note-list'); if (list && atBottom) list.scrollTop = list.scrollHeight;
     const tl = $('#thread-list');
     if (tl) { const f = entering && $('.replying', tl); tl.scrollTop = f ? f.offsetTop - tl.clientHeight / 2 + f.offsetHeight / 2 : tl.scrollHeight; }
@@ -1125,7 +1135,10 @@ const actions = {
     if (await save({theme: {...th, accent: $('#ac').value, font: $('#ft').value, navScale: Number($('#navScale').value) / 100}})) toast('Settings saved');
   },
   cbg: () => $('#cbgf').click(),
-  async cbgx(){ const {chatBg, ...rest} = people[me].theme || {}; if (await save({theme: rest})) toast('Background removed'); },
+  async cbgx(){
+    const th = people[me].theme || {};
+    if (await save({theme: {...th, chatBg: {type: 'none', updatedAt: new Date().toISOString()}}})) toast('Background removed');
+  },
   async 'cn-save'(){
     const {nickMe, ...th} = people[me].theme || {};   // nickMe from the earlier version is dropped
     if (await save({theme: {...th, nickThem: $('#cn-them').value.trim()}})) toast('Nickname saved');
@@ -1157,7 +1170,7 @@ const changes = {
     const f = $('#cbgf').files[0]; if (!f) return;
     toast('Uploading background...');
     const path = await upload(f, 'bg'); if (!path) return;
-    await save({theme: {...(people[me].theme || {}), chatBg: {type: f.type.startsWith('video') ? 'video' : 'image', path}}});
+    await save({theme: {...(people[me].theme || {}), chatBg: {type: f.type.startsWith('video') ? 'video' : 'image', path, updatedAt: new Date().toISOString()}}});
   }
 };
 
@@ -1297,7 +1310,6 @@ addEventListener('pointerdown', e => {
 });
 
 function showErr(e){
-  killViewGlass();
   app.innerHTML = `<div class="card gl"><b>Something went wrong</b><p>${esc(e && (e.message || e.reason || e))}</p><button id="retry">Back to sign in</button></div>`;
   $('#retry').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 }

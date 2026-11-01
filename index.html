@@ -125,6 +125,16 @@ button:not(.ni,.tgl).pressed::after,.message-composer.pressed::after{opacity:1}
 .contact-inner #cn-save{margin-top:4px;height:46px}
 @media(prefers-reduced-motion:reduce){button{transition:none!important}#toast{animation:none}}
 @media(prefers-reduced-transparency:reduce){.card,button.ghost,.messages-title:not(.online),.message-composer,.message:not(.me),#lb{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--card)!important}#bg{background:none}}
+#maintenance-screen{display:none}
+body.maintenance-mode{min-height:100svh;padding:24px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(70% 55% at 50% 0%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 75%),var(--bg)}
+body.maintenance-mode #bg,body.maintenance-mode #toast,body.maintenance-mode #nav,body.maintenance-mode #app{display:none!important}
+body.maintenance-mode #maintenance-screen{display:block;width:min(100%,440px)}
+.maintenance-card{padding:clamp(28px,8vw,44px);text-align:center;border:1px solid #ffffff3d;border-radius:28px;background:linear-gradient(145deg,#ffffff12,#ffffff05),color-mix(in srgb,var(--card) 76%,transparent);-webkit-backdrop-filter:blur(24px) saturate(170%);backdrop-filter:blur(24px) saturate(170%);box-shadow:0 24px 70px #0005,inset 0 1px 0 #ffffff80,inset 0 -1px 0 #ffffff1f}
+.maintenance-mark{width:54px;height:54px;margin:0 auto 18px;display:grid;place-items:center;border:1px solid #ffffff40;border-radius:18px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.maintenance-mark svg{width:27px;height:27px}
+.maintenance-card h1{margin:0;font-size:clamp(24px,6vw,32px);line-height:1.15;letter-spacing:-.03em}
+.maintenance-card p{max-width:32ch;margin:12px auto 0;opacity:.72}
+@media(prefers-reduced-transparency:reduce){.maintenance-card{background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* navigation */
 #nav{position:fixed;z-index:5;display:flex;flex-direction:column;align-items:center;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -410,8 +420,17 @@ body.nonav #nav{display:none}
 @media(prefers-reduced-motion:reduce){#thread.leaving,#thread.leaving .message,#thread.leaving .links path,#thread.leaving .links circle{animation:none}}
 </style></head>
 <body class="nonav"><div id="bg"></div><div id="toast"></div><nav id="nav"></nav><main id="app"></main>
+<div id="maintenance-screen" role="status" aria-live="polite">
+  <section class="maintenance-card">
+    <div class="maintenance-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></div>
+    <h1>Sorry Baby, Lovely is currently experiencing technical difficulties.</h1>
+    <p>I'm working as fast as i can to deliver the best experience. Thank you for your patience💙.</p>
+  </section>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <script>
+const MAINTENANCE_MODE = true;
+if (MAINTENANCE_MODE) document.body.classList.add('maintenance-mode');
 const sb = supabase.createClient('https://vffhgnflcrlddodldprn.supabase.co', 'sb_publishable_ucjyfX7n8IKT5TtUyGZVUw_VKeqjj3L');
 const $ = (s, r = document) => r.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const app = $('#app'), nav = $('#nav'), rootStyle = document.documentElement.style;
@@ -1284,5 +1303,5 @@ function showErr(e){
 }
 addEventListener('unhandledrejection', ev => showErr(ev.reason));
 addEventListener('error', ev => showErr(ev.error || ev.message));
-initNav(); applyTheme(); boot().catch(showErr);
+if (!MAINTENANCE_MODE) { initNav(); applyTheme(); boot().catch(showErr); }
 </script></body></html>
